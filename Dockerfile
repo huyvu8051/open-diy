@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy the server binary and site assets from the builder stage
-COPY --from=builder /app/target/server/release/open-diy /app/
+COPY --from=builder /app/target/release/open-diy /app/
 COPY --from=builder /app/target/site /app/site
 
 # Set environment variables for Leptos SSR
