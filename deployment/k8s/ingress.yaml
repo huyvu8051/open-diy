@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: open-diy-ingress
+  namespace: open-diy
+spec:
+  rules:
+    - host: open-diy.unghotoi.asia
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: open-diy-service
+                port:
+                  number: 80
+    - host: open-diy.unghotui.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: open-diy-service
+                port:
+                  number: 80
