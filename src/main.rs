@@ -3,11 +3,26 @@
 #[cfg(feature = "ssr")]
 #[tokio::main]
 async fn main() {
-    use axum::Router;
+    use axum::{http::header, response::IntoResponse, routing::get, Router};
     use leptos::logging::log;
     use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
     use open_diy::app::*;
+    use open_diy::seo::{robots_txt, sitemap_xml};
+
+    async fn robots_txt_handler() -> impl IntoResponse {
+        (
+            [(header::CONTENT_TYPE, "text/plain; charset=utf-8")],
+            robots_txt(),
+        )
+    }
+
+    async fn sitemap_xml_handler() -> impl IntoResponse {
+        (
+            [(header::CONTENT_TYPE, "application/xml; charset=utf-8")],
+            sitemap_xml(),
+        )
+    }
 
     let conf = get_configuration(None).unwrap();
     let addr = conf.leptos_options.site_addr;
@@ -16,6 +31,8 @@ async fn main() {
     let routes = generate_route_list(App);
 
     let app = Router::new()
+        .route("/robots.txt", get(robots_txt_handler))
+        .route("/sitemap.xml", get(sitemap_xml_handler))
         .leptos_routes(&leptos_options, routes, {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())
