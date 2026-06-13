@@ -992,6 +992,7 @@ fn Footer() -> impl IntoView {
                         <li><A href="/shop">"Catalog Shop"</A></li>
                         <li><A href="/builder">"Configurator"</A></li>
                         <li><A href="/about">"Philosophy"</A></li>
+                        <li><a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer">"Shopee Store"</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
