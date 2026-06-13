@@ -5,7 +5,6 @@ use leptos::prelude::*;
 use leptos_meta::{provide_meta_context, MetaTags, Script, Stylesheet};
 use leptos_router::{
     components::{Route, Router, Routes, A},
-    hooks::use_query_map,
     StaticSegment,
 };
 
@@ -14,65 +13,17 @@ Data Types
 ========================================== */
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct CartItem {
+pub struct Product {
     pub id: String,
     pub name: String,
+    pub tag: String,
     pub image: String,
     pub price: f64,
-    pub layout: String,
-    pub color: String,
-    pub switches: String,
-    pub keycaps: String,
-    pub quantity: u32,
-}
-
-#[derive(Clone, Copy)]
-pub struct CartContext {
-    pub items: RwSignal<Vec<CartItem>>,
-    pub is_open: RwSignal<bool>,
-}
-
-impl CartContext {
-    pub fn add_item(&self, item: CartItem) {
-        self.items.update(|current| {
-            if let Some(existing) = current.iter_mut().find(|i| {
-                i.id == item.id
-                    && i.layout == item.layout
-                    && i.color == item.color
-                    && i.switches == item.switches
-                    && i.keycaps == item.keycaps
-            }) {
-                existing.quantity += item.quantity;
-            } else {
-                current.push(item);
-            }
-        });
-        self.is_open.set(true);
-    }
-
-    pub fn remove_item(&self, index: usize) {
-        self.items.update(|current| {
-            if index < current.len() {
-                current.remove(index);
-            }
-        });
-    }
-
-    pub fn clear(&self) {
-        self.items.set(Vec::new());
-    }
-
-    pub fn total_quantity(&self) -> u32 {
-        self.items.get().iter().map(|item| item.quantity).sum()
-    }
-
-    pub fn subtotal(&self) -> f64 {
-        self.items
-            .get()
-            .iter()
-            .map(|item| item.price * item.quantity as f64)
-            .sum()
-    }
+    pub desc: String,
+    pub detailed_desc: String,
+    pub shopee_url: String,
+    pub github_url: Option<String>,
+    pub specs: Vec<String>,
 }
 
 /* ==========================================
@@ -105,11 +56,6 @@ Main App Component
 pub fn App() -> impl IntoView {
     provide_meta_context();
 
-    // Initialize Shopping Cart State
-    let items = RwSignal::new(Vec::<CartItem>::new());
-    let is_open = RwSignal::new(false);
-    provide_context(CartContext { items, is_open });
-
     view! {
         <Stylesheet id="leptos" href="/pkg/open-diy.css"/>
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
@@ -122,12 +68,9 @@ pub fn App() -> impl IntoView {
                     <Routes fallback=NotFoundPage>
                         <Route path=StaticSegment("") view=HomePage/>
                         <Route path=StaticSegment("shop") view=CatalogPage/>
-                        <Route path=StaticSegment("builder") view=BuilderPage/>
                         <Route path=StaticSegment("about") view=AboutPage/>
-                        <Route path=StaticSegment("checkout-success") view=CheckoutSuccessPage/>
                     </Routes>
                 </main>
-                <CartDrawer/>
                 <Footer/>
             </Router>
         </div>
@@ -140,9 +83,6 @@ Navigation Component
 
 #[component]
 fn Navbar() -> impl IntoView {
-    let cart = use_context::<CartContext>().expect("CartContext not found");
-    let total_qty = move || cart.total_quantity();
-
     view! {
         <nav class="navbar">
             <A href="/" attr:class="nav-brand">
@@ -164,121 +104,14 @@ fn Navbar() -> impl IntoView {
             <ul class="nav-menu">
                 <li><A href="/" attr:class="nav-link">"Home"</A></li>
                 <li><A href="/shop" attr:class="nav-link">"Shop"</A></li>
-                <li><A href="/builder" attr:class="nav-link">"Builder"</A></li>
                 <li><A href="/about" attr:class="nav-link">"About"</A></li>
             </ul>
             <div class="nav-actions">
-                <button class="cart-trigger" on:click=move |_| cart.is_open.set(true)>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                    <span>"Cart"</span>
-                    <span class="cart-count">{total_qty}</span>
-                </button>
+                <a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                    "Shopee Store"
+                </a>
             </div>
         </nav>
-    }
-}
-
-/* ==========================================
-Shopping Cart Slide-out Drawer Component
-========================================== */
-
-#[component]
-fn CartDrawer() -> impl IntoView {
-    let cart = use_context::<CartContext>().expect("CartContext not found");
-    let is_open = move || cart.is_open.get();
-    let cart_items = move || cart.items.get();
-    let subtotal = move || cart.subtotal();
-
-    view! {
-        <div class=move || if is_open() { "cart-drawer-backdrop open" } else { "cart-drawer-backdrop" }
-             on:click=move |_| cart.is_open.set(false)></div>
-
-        <div class=move || if is_open() { "cart-drawer open" } else { "cart-drawer" }>
-            <div class="cart-header">
-                <div class="cart-title">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart" style="color: #06b6d4;">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    "Your Cart"
-                </div>
-                <button class="cart-close-btn" on:click=move |_| cart.is_open.set(false)>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="cart-items-list">
-                {move || if cart_items().is_empty() {
-                    view! {
-                        <div class="cart-empty-message">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                            </svg>
-                            <p>"Your cart is currently empty."</p>
-                            <A href="/shop" attr:class="btn btn-secondary btn-sm" on:click=move |_| cart.is_open.set(false)>"Browse Keyboards"</A>
-                        </div>
-                    }.into_any()
-                } else {
-                    cart_items().into_iter().enumerate().map(|(idx, item)| {
-                        let name = item.name.clone();
-                        let img = item.image.clone();
-                        let layout = item.layout.clone();
-                        let color = item.color.clone();
-                        let switches = item.switches.clone();
-                        let keycaps = item.keycaps.clone();
-                        let price_str = format!("{:.2}", item.price);
-                        let qty = item.quantity;
-                        view! {
-                            <div class="cart-item">
-                                <img src=img class="cart-item-img" alt=name.clone()/>
-                                <div class="cart-item-details">
-                                    <div class="cart-item-name">{name}</div>
-                                    <div class="cart-item-specs">
-                                        "Layout: " {layout} " | Color: " {color}
-                                        <br/>
-                                        "Switches: " {switches} " | Caps: " {keycaps}
-                                    </div>
-                                    <div class="cart-item-bottom">
-                                        <div class="cart-item-price">"$" {price_str} " (x" {qty} ")"</div>
-                                        <button class="cart-item-remove" on:click=move |_| cart.remove_item(idx)>"Remove"</button>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }).collect_view().into_any()
-                }}
-            </div>
-
-            {move || if !cart_items().is_empty() {
-                view! {
-                    <div class="cart-footer">
-                        <div class="cart-total-row">
-                            <span>"Subtotal"</span>
-                            <span class="cart-total-price">"$" {format!("{:.2}", subtotal())}</span>
-                        </div>
-                        <A href="/checkout-success" attr:class="btn btn-primary cart-checkout-btn" on:click=move |_| {
-                            cart.clear();
-                            cart.is_open.set(false);
-                        }>
-                            "Checkout Order"
-                        </A>
-                    </div>
-                }.into_any()
-            } else {
-                view! {}.into_any()
-            }}
-        </div>
     }
 }
 
@@ -291,7 +124,7 @@ fn HomePage() -> impl IntoView {
     view! {
         <SeoHead
             title="open-diy | Custom 3D Printed Keyboards".to_string()
-            description="Shop and configure ergonomic 3D printed keyboards with open-source designs, custom switches, and premium keycaps.".to_string()
+            description="Shop ergonomic 3D printed keyboards with open-source designs, custom switches, and premium keycaps.".to_string()
             path="/".to_string()
             image_path="/images/dactyl.png".to_string()
         />
@@ -299,16 +132,16 @@ fn HomePage() -> impl IntoView {
         <div class="hero">
             <span class="hero-tag">"Revolutionary Mechanical Keyboards"</span>
             <h1 class="hero-title">
-                "Fully Custom "
+                "Ergonomic "
                 <br/>
                 <span class="gradient-text">"3D Printed Keyboards"</span>
             </h1>
             <p class="hero-subtitle">
-                "Open-source designs manufactured in-house with high-performance plastics. Fully configured to your taste, sound profile, and ergonomics."
+                "Open-source designs manufactured in-house with high-performance plastics. contoured for your comfort, posture, and typing acoustics."
             </p>
             <div class="hero-actions">
-                <A href="/builder" attr:class="btn btn-primary">"Configure Yours"</A>
-                <A href="/shop" attr:class="btn btn-secondary">"Browse Catalog"</A>
+                <A href="/shop" attr:class="btn btn-primary">"Browse Products"</A>
+                <A href="/about" attr:class="btn btn-secondary">"Our Philosophy"</A>
             </div>
             <div class="hero-visual">
                 <img src="/images/dactyl.png" alt="Dactyl Manuform Custom Keyboard"/>
@@ -364,7 +197,7 @@ fn HomePage() -> impl IntoView {
             <div class="grid grid-cols-3" style="gap: 18px;">
                 <details class="glass-card feature-card" open>
                     <summary style="cursor: pointer; font-weight: 700;">"What makes open-diy different?"</summary>
-                    <p style="margin-top: 12px;">"We combine open-source keyboard design with in-house 3D printing, custom switch choices, and a guided builder so buyers can get a keyboard that fits their typing style."</p>
+                    <p style="margin-top: 12px;">"We combine open-source keyboard design with in-house 3D printing, custom switch choices, and direct links to checkout safely on Shopee."</p>
                 </details>
                 <details class="glass-card feature-card">
                     <summary style="cursor: pointer; font-weight: 700;">"Can I build an ergonomic keyboard here?"</summary>
@@ -372,7 +205,7 @@ fn HomePage() -> impl IntoView {
                 </details>
                 <details class="glass-card feature-card">
                     <summary style="cursor: pointer; font-weight: 700;">"Do you support DIY builders?"</summary>
-                    <p style="margin-top: 12px;">"Absolutely. The About page points to the open-source side of the project, while the builder lets shoppers configure a fully assembled board if they want a finished purchase."</p>
+                    <p style="margin-top: 12px;">"Absolutely. The About page points to the open-source side of the project, and we list public GitHub repositories for builders who want to print and assemble by themselves."</p>
                 </details>
             </div>
         </section>
@@ -385,6 +218,101 @@ Catalog Page Component
 
 #[component]
 fn CatalogPage() -> impl IntoView {
+    let selected_product = RwSignal::<Option<Product>>::new(None);
+
+    let products = vec![
+        Product {
+            id: String::from("dactyl"),
+            name: String::from("Dactyl-ManuForm Split"),
+            tag: String::from("Best Seller"),
+            image: String::from("/images/dactyl.png"),
+            price: 219.0,
+            desc: String::from("The ultimate split ergonomic design. Hand-scaffolded curved keywells, separate left/right modules for optimal desk positioning."),
+            detailed_desc: String::from("Dactyl-ManuForm is a split, contoured, ergonomic mechanical keyboard. By placing keys in a 3D curved keywell, it minimizes the distance fingers must travel, reducing strain. Separate left and right modules let you locate them exactly where your hands naturally rest, aligning with your shoulders to prevent slouching."),
+            shopee_url: String::from("https://shopee.vn/opendiy"),
+            github_url: Some(String::from("https://github.com/tshort/dactyl-keyboard")),
+            specs: vec![
+                String::from("3D sculpted curved split keywells"),
+                String::from("Columnar layout to match finger lengths"),
+                String::from("Fully hot-swappable switch sockets"),
+                String::from("VIAL/QMK firmware custom keymap mapping"),
+                String::from("High-grade PETG/ASA active-heated printed shell"),
+            ],
+        },
+        Product {
+            id: String::from("frosted"),
+            name: String::from("Frosted 60% Neon"),
+            tag: String::from("Minimalist"),
+            image: String::from("/images/frosted.png"),
+            price: 109.0,
+            desc: String::from("Compact 60% layout with a semi-translucent case. Ideal for clean desk setups with vibrant customizable RGB underglow."),
+            detailed_desc: String::from("The Frosted 60% Neon features a high-quality semi-translucent matte finish casing that disperses underglow LED lighting beautifully. Designed for keyboard enthusiasts who want a clean, minimalist workspace setup without sacrificing structural rigidity or premium acoustic signatures."),
+            shopee_url: String::from("https://shopee.vn/opendiy"),
+            github_url: None,
+            specs: vec![
+                String::from("Sleek unibody 60% compact layout"),
+                String::from("Frosted acrylic-style translucent enclosure"),
+                String::from("Customizable vibrant underglow RGB LEDs"),
+                String::from("Hot-swappable keys with sound dampening foam"),
+                String::from("Standard ANSI layout layout compatibility"),
+            ],
+        },
+        Product {
+            id: String::from("alice"),
+            name: String::from("Alice Curved Forest"),
+            tag: String::from("Ergonomic"),
+            image: String::from("/images/alice.png"),
+            price: 149.0,
+            desc: String::from("Unibody ergonomic curved layout. Reduces wrist ulnar deviation without the learning curve of a fully split keyboard."),
+            detailed_desc: String::from("The Alice Curved Forest brings ergonomic typing to a unibody form factor. By curving the alphabetic keys outward, it aligns with your wrist angles, reducing strain. This design is perfect for typing enthusiasts who want ergonomic benefits without adjusting to two separate modules."),
+            shopee_url: String::from("https://shopee.vn/opendiy"),
+            github_url: None,
+            specs: vec![
+                String::from("Ergonomic curved Alice unibody layout"),
+                String::from("Reduces wrist ulnar deviation"),
+                String::from("Hot-swappable switch sockets"),
+                String::from("Forest green textured acoustic casing"),
+                String::from("Simple standard keyboard learning curve"),
+            ],
+        },
+        Product {
+            id: String::from("corne"),
+            name: String::from("Corne Cherry Split"),
+            tag: String::from("Ultra-Compact"),
+            image: String::from("/images/corne.png"),
+            price: 129.0,
+            desc: String::from("Ultra-compact 40% split layout. Highly optimized mapping, customized dual OLED displays, and brilliant customizable RGB underglow."),
+            detailed_desc: String::from("Corne (Crkbd) is a legendary ultra-compact 40% split mechanical keyboard. By discarding the number and function rows, it keeps all keys within one unit of your home row. With customizable dual OLED status displays and full addressable RGB underglow, it is the ultimate keyboard for developers and minimalists."),
+            shopee_url: String::from("https://shopee.vn/opendiy"),
+            github_url: Some(String::from("https://github.com/foostan/crkbd")),
+            specs: vec![
+                String::from("Ultra-compact split 42-key layout"),
+                String::from("Dual custom 0.91-inch OLED screens"),
+                String::from("Individual per-key and underglow RGB"),
+                String::from("VIAL software support for simple custom layer setup"),
+                String::from("Premium slim acrylic plate sandwich casing"),
+            ],
+        },
+        Product {
+            id: String::from("wristrests"),
+            name: String::from("Dactyl Walnut Wrist Rests"),
+            tag: String::from("Accessories"),
+            image: String::from("/images/wristrests.png"),
+            price: 39.0,
+            desc: String::from("Handcrafted premium American Walnut wood. Artfully sculpted and contoured to perfectly match Dactyl Manuform split casings."),
+            detailed_desc: String::from("These premium wrist rests are handcrafted from solid American Walnut wood. Specifically sculpted to match the exact vertical and horizontal curves of Dactyl Manuform casings, they provide the necessary elevation and support for your wrists during long coding sessions."),
+            shopee_url: String::from("https://shopee.vn/opendiy"),
+            github_url: None,
+            specs: vec![
+                String::from("Solid American Walnut wood construction"),
+                String::from("Custom contoured specifically for Dactyl curves"),
+                String::from("Satin natural wood oil finish"),
+                String::from("Non-slip silicone rubber feet embedded"),
+                String::from("Reduces wrist extension and muscle tension"),
+            ],
+        },
+    ];
+
     view! {
         <SeoHead
             title="open-diy Shop | Curated 3D Printed Keyboard Builds".to_string()
@@ -431,426 +359,125 @@ fn CatalogPage() -> impl IntoView {
             <div class="section-header">
                 <span class="hero-tag" style="margin-bottom: 12px;">"Catalog"</span>
                 <h1 class="section-title">"Our " <span class="gradient-text">"Curated Builds"</span></h1>
-                <p class="section-subtitle">"Choose a layout template and edit it directly in our visual configurator."</p>
+                <p class="section-subtitle">"Browse our professional ergonomic layouts and order securely on Shopee."</p>
             </div>
             <div class="glass-card" style="max-width: 1200px; margin: 0 auto 28px auto; padding: 20px 24px;">
                 <p style="margin-bottom: 10px;">"Each build is designed for people searching for an ergonomic keyboard that feels custom without requiring a full DIY project from scratch."</p>
-                <p>"Use the catalog to compare layouts, pricing, and aesthetics before opening the builder to fine-tune switches, keycaps, and case color."</p>
+                <p>"Click on any product to view its detailed specifications, and open the Shopee link to customize options and place your order."</p>
             </div>
 
             <div class="grid grid-cols-3" style="max-width: 1200px; margin: 0 auto;">
-                // Product 1
-                <div class="glass-card product-card">
-                    <div class="product-image-wrapper">
-                        <span class="product-tag">"Best Seller"</span>
-                        <img src="/images/dactyl.png" alt="Dactyl Manuform ergonomic keyboard" loading="lazy" decoding="async"/>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">"Dactyl-ManuForm Split"</h3>
-                        <p class="product-desc">"The ultimate split ergonomic design. Hand-scaffolded curved keywells, separate left/right modules for optimal desk positioning."</p>
-                        <div class="product-meta">
-                            <span class="product-price">"From $219.00"</span>
-                            <A href="/builder?preset=dactyl" attr:class="btn btn-primary btn-sm">"Customize"</A>
+                {products.into_iter().map(|p| {
+                    let p1 = p.clone();
+                    let p2 = p.clone();
+                    let p3 = p.clone();
+                    let p_img = p.image.clone();
+                    let p_tag = p.tag.clone();
+                    let p_name = p.name.clone();
+                    let p_desc = p.desc.clone();
+                    let p_price = p.price;
+                    view! {
+                        <div class="glass-card product-card">
+                            <div class="product-image-wrapper" style="cursor: pointer;" on:click=move |_| selected_product.set(Some(p1.clone()))>
+                                <span class="product-tag">{p_tag}</span>
+                                <img src=p_img alt=p_name.clone() loading="lazy" decoding="async"/>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title" style="cursor: pointer;" on:click=move |_| selected_product.set(Some(p2.clone()))>{p_name}</h3>
+                                <p class="product-desc">{p_desc}</p>
+                                <div class="product-meta">
+                                    <span class="product-price">"From $" {format!("{:.2}", p_price)}</span>
+                                    <button on:click=move |_| selected_product.set(Some(p3.clone())) class="btn btn-primary btn-sm">"View Details"</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                // Product 2
-                <div class="glass-card product-card">
-                    <div class="product-image-wrapper">
-                        <span class="product-tag">"Minimalist"</span>
-                        <img src="/images/frosted.png" alt="Frosted 60 percent compact keyboard" loading="lazy" decoding="async"/>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">"Frosted 60% Neon"</h3>
-                        <p class="product-desc">"Compact 60% layout with a semi-translucent case. Ideal for clean desk setups with vibrant customizable RGB underglow."</p>
-                        <div class="product-meta">
-                            <span class="product-price">"From $109.00"</span>
-                            <A href="/builder?preset=frosted" attr:class="btn btn-primary btn-sm">"Customize"</A>
-                        </div>
-                    </div>
-                </div>
-
-                // Product 3
-                <div class="glass-card product-card">
-                    <div class="product-image-wrapper">
-                        <span class="product-tag">"Ergonomic"</span>
-                        <img src="/images/alice.png" alt="Alice curved ergonomic keyboard" loading="lazy" decoding="async"/>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">"Alice Curved Forest"</h3>
-                        <p class="product-desc">"Unibody ergonomic curved layout. Reduces wrist ulnar deviation without the learning curve of a fully split keyboard."</p>
-                        <div class="product-meta">
-                            <span class="product-price">"From $149.00"</span>
-                            <A href="/builder?preset=alice" attr:class="btn btn-primary btn-sm">"Customize"</A>
-                        </div>
-                    </div>
-                </div>
-
-                // Product 4
-                <div class="glass-card product-card">
-                    <div class="product-image-wrapper">
-                        <span class="product-tag">"Ultra-Compact"</span>
-                        <img src="/images/corne.png" alt="Corne split mechanical keyboard 40 percent" loading="lazy" decoding="async"/>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">"Corne Cherry Split"</h3>
-                        <p class="product-desc">"Ultra-compact 40% split layout. Highly optimized mapping, customized dual OLED displays, and brilliant customizable RGB underglow."</p>
-                        <div class="product-meta">
-                            <span class="product-price">"From $129.00"</span>
-                            <A href="/builder" attr:class="btn btn-primary btn-sm">"Customize"</A>
-                        </div>
-                    </div>
-                </div>
-
-                // Product 5
-                <div class="glass-card product-card">
-                    <div class="product-image-wrapper">
-                        <span class="product-tag">"Accessories"</span>
-                        <img src="/images/wristrests.png" alt="Ergonomic wooden split wrist rests" loading="lazy" decoding="async"/>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">"Dactyl Walnut Wrist Rests"</h3>
-                        <p class="product-desc">"Handcrafted premium American Walnut wood. Artfully sculpted and contoured to perfectly match Dactyl Manuform split casings."</p>
-                        <div class="product-meta">
-                            <span class="product-price">"From $39.00"</span>
-                            <A href="/shop" attr:class="btn btn-secondary btn-sm">"View Details"</A>
-                        </div>
-                    </div>
-                </div>
+                    }
+                }).collect_view()}
             </div>
         </section>
+
+        <ProductDetailModal product=selected_product />
     }
 }
 
 /* ==========================================
-Keyboard Customizer Page Component
+Product Detail Slide-over Panel Component
 ========================================== */
 
 #[component]
-fn BuilderPage() -> impl IntoView {
-    let cart = use_context::<CartContext>().expect("CartContext not found");
-
-    // Read the query parameters reactive map
-    let query_map = use_query_map();
-
-    // Configurable signals
-    let selected_layout = RwSignal::new(String::from("dactyl"));
-    let selected_color = RwSignal::new(String::from("Matte Black"));
-    let selected_switch = RwSignal::new(String::from("Linear Red"));
-    let selected_keycaps = RwSignal::new(String::from("Retro Cream"));
-    let quantity = RwSignal::new(1u32);
-
-    // React to query parameter preset changes
-    Effect::new(move |_| {
-        let preset_val = query_map.read().get("preset").unwrap_or_default();
-        if preset_val == "frosted" {
-            selected_layout.set(String::from("frosted"));
-            selected_color.set(String::from("Frosted Glass"));
-            selected_keycaps.set(String::from("Pastel Gradient"));
-        } else if preset_val == "alice" {
-            selected_layout.set(String::from("alice"));
-            selected_color.set(String::from("Forest Green"));
-            selected_keycaps.set(String::from("Retro Cream"));
-        } else if preset_val == "dactyl" {
-            selected_layout.set(String::from("dactyl"));
-            selected_color.set(String::from("Matte Black"));
-            selected_keycaps.set(String::from("Retro Cream"));
-        }
-    });
-
-    // Option base prices and addon costs
-    let get_prices = move || {
-        let base = match selected_layout.get().as_str() {
-            "frosted" => 109.0,
-            "alice" => 149.0,
-            _ => 219.0, // dactyl
-        };
-
-        let color_addon = match selected_color.get().as_str() {
-            "Frosted Glass" => 15.0,
-            "Forest Green" => 10.0,
-            "Marble White" => 10.0,
-            _ => 0.0,
-        };
-
-        let switch_addon = match selected_switch.get().as_str() {
-            "Tactile Brown" => 5.0,
-            "Custom Silent" => 20.0,
-            _ => 0.0,
-        };
-
-        let keycap_addon = match selected_keycaps.get().as_str() {
-            "Retro Cream" => 20.0,
-            "Pastel Gradient" => 25.0,
-            "Classic Matte Black" => 10.0,
-            _ => 0.0, // None
-        };
-
-        (
-            base,
-            color_addon,
-            switch_addon,
-            keycap_addon,
-            base + color_addon + switch_addon + keycap_addon,
-        )
-    };
-
-    // Calculate total price
-    let total_price = move || {
-        let (_, _, _, _, total) = get_prices();
-        total * (quantity.get() as f64)
-    };
-
-    // Keyboard layouts list
-    let layouts = vec![
-        (
-            "dactyl",
-            "Dactyl-ManuForm Split",
-            "Sculpted curved split layout, optimum comfort.",
-            219.0,
-        ),
-        (
-            "frosted",
-            "Frosted 60% Compact",
-            "Ultra compact unibody with gorgeous underglow.",
-            109.0,
-        ),
-        (
-            "alice",
-            "Alice Curved Ergonomic",
-            "Curved layout without separate modules.",
-            149.0,
-        ),
-    ];
-
-    // Colors list
-    let colors = vec![
-        ("Matte Black", "#111827", "rgba(255,255,255,0.2)"),
-        (
-            "Frosted Glass",
-            "rgba(243,244,246,0.6)",
-            "rgba(6,182,212,0.6)",
-        ),
-        ("Forest Green", "#1e3f20", "rgba(16,185,129,0.5)"),
-        ("Marble White", "#f9fafb", "rgba(139,92,246,0.4)"),
-    ];
-
-    // Switches list
-    let switches = vec![
-        ("Linear Red", "Smooth & Quiet", 0.0),
-        ("Tactile Brown", "Balanced tactile bump", 5.0),
-        ("Clicky Blue", "Satisfying loud click", 0.0),
-        ("Custom Silent", "Lubed & ultra-quiet linear", 20.0),
-    ];
-
-    // Keycaps list
-    let keycaps = vec![
-        ("Retro Cream", "PBT Vintage Cream & Slate", 20.0),
-        ("Pastel Gradient", "Pastel rainbow gradient", 25.0),
-        (
-            "Classic Matte Black",
-            "Minimalist matte black keycaps",
-            10.0,
-        ),
-        ("Bring Your Own", "Shipped without keycaps", 0.0),
-    ];
-
-    // Add item handler
-    let add_to_cart_action = move |_| {
-        let name = match selected_layout.get().as_str() {
-            "frosted" => "open-diy Frosted 60%",
-            "alice" => "open-diy Alice Forest",
-            _ => "open-diy Dactyl-ManuForm Split",
-        };
-
-        let image = match selected_layout.get().as_str() {
-            "frosted" => "/images/frosted.png",
-            "alice" => "/images/alice.png",
-            _ => "/images/dactyl.png",
-        };
-
-        let (_, _, _, _, unit_price) = get_prices();
-
-        let item = CartItem {
-            id: selected_layout.get(),
-            name: String::from(name),
-            image: String::from(image),
-            price: unit_price,
-            layout: match selected_layout.get().as_str() {
-                "frosted" => String::from("Frosted 60%"),
-                "alice" => String::from("Alice Curved"),
-                _ => String::from("Dactyl-ManuForm"),
-            },
-            color: selected_color.get(),
-            switches: selected_switch.get(),
-            keycaps: selected_keycaps.get(),
-            quantity: quantity.get(),
-        };
-
-        cart.add_item(item);
-    };
+fn ProductDetailModal(
+    product: RwSignal<Option<Product>>,
+) -> impl IntoView {
+    let show = move || product.get().is_some();
+    let close = move |_| product.set(None);
 
     view! {
-        <SeoHead
-            title="open-diy Builder | Configure an Ergonomic Keyboard".to_string()
-            description="Customize your open-diy keyboard build by choosing layout, case color, switches, keycaps, and quantity in one place.".to_string()
-            path="/builder".to_string()
-            image_path="/images/dactyl.png".to_string()
-        />
-        <section class="builder-section">
-            <div class="section-header">
-                <span class="hero-tag" style="margin-bottom: 12px;">"Interactive Customizer"</span>
-                <h1 class="section-title">"Assemble Your " <span class="gradient-text">"Dream Keyboard"</span></h1>
-                <p class="section-subtitle">"Realtime custom selections with dynamic pricing. Built by hand, printed for you."</p>
-                <p style="max-width: 840px; margin: 0 auto; color: var(--text-muted);">
-                    "This configurator is for shoppers who want a custom keyboard with the ergonomics of a specialist build and the convenience of a guided checkout flow."
-                </p>
-            </div>
+        <div class=move || if show() { "cart-drawer-backdrop open" } else { "cart-drawer-backdrop" }
+             on:click=close></div>
 
-            <div class="builder-container" style="max-width: 1200px; margin: 0 auto;">
-                <div class="builder-preview-pane">
-                    <div class="preview-image-container">
-                        {move || match selected_layout.get().as_str() {
-                            "frosted" => view! { <img src="/images/frosted.png" alt="Frosted 60% keyboard preview" loading="lazy" decoding="async"/> }.into_view(),
-                            "alice" => view! { <img src="/images/alice.png" alt="Alice curved keyboard preview" loading="lazy" decoding="async"/> }.into_view(),
-                            _ => view! { <img src="/images/dactyl.png" alt="Dactyl ManuForm keyboard preview" loading="lazy" decoding="async"/> }.into_view(),
-                        }}
+        <div class=move || if show() { "cart-drawer open" } else { "cart-drawer" } style="padding: 28px; display: flex; flex-direction: column; overflow-y: auto;">
+            {move || product.get().map(|p| {
+                let name = p.name.clone();
+                let img = p.image.clone();
+                let desc = p.detailed_desc.clone();
+                let price_str = format!("{:.2}", p.price);
+                let shopee = p.shopee_url.clone();
+                let github = p.github_url.clone();
+                let specs = p.specs.clone();
 
-                        <div class="preview-overlay-specs">
-                            <span class="spec-pill">"Layout: " <strong>{selected_layout}</strong></span>
-                            <span class="spec-pill">"Color: " <strong>{selected_color}</strong></span>
-                            <span class="spec-pill">"Switches: " <strong>{selected_switch}</strong></span>
-                            <span class="spec-pill">"Keycaps: " <strong>{selected_keycaps}</strong></span>
-                        </div>
+                view! {
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                        <h2 class="gradient-text" style="font-size: 1.5rem; margin: 0; line-height: 1.25;">{name}</h2>
+                        <button class="cart-close-btn" on:click=close style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 5px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     </div>
 
-                    <div class="glass-card builder-summary-card">
-                        <h3 style="font-size: 1.25rem; margin-bottom: 15px;">"Order Summary"</h3>
-                        <div class="summary-row">
-                            <span>"Base Keyboard Layout"</span>
-                            <span>"$" {move || format!("{:.2}", get_prices().0)}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>"Case Filament Color"</span>
-                            <span>"+" {move || format!("${:.2}", get_prices().1)}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>"Switch Option"</span>
-                            <span>"+" {move || format!("${:.2}", get_prices().2)}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>"Keycaps Style"</span>
-                            <span>"+" {move || format!("${:.2}", get_prices().3)}</span>
-                        </div>
-                        <div class="summary-row total">
-                            <span>"Total Cost"</span>
-                            <span>"$" {move || format!("{:.2}", total_price())}</span>
-                        </div>
+                    <div style="text-align: center; background: #111827; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                        <img src=img style="width: 100%; aspect-ratio: 16/10; object-fit: cover;" alt=p.name.clone()/>
+                    </div>
 
-                        <div style="display: flex; gap: 15px; align-items: center; margin-top: 20px;">
-                            <div style="display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px;">
-                                <button class="btn btn-secondary btn-sm" style="padding: 6px 12px; border: none; background: none;" on:click=move |_| {
-                                    if quantity.get() > 1 {
-                                        quantity.set(quantity.get() - 1);
-                                    }
-                                }>"-"</button>
-                                <span style="padding: 0 15px; font-weight: 600; font-family: var(--font-display);">{quantity}</span>
-                                <button class="btn btn-secondary btn-sm" style="padding: 6px 12px; border: none; background: none;" on:click=move |_| {
-                                    quantity.set(quantity.get() + 1);
-                                } >"+"</button>
-                            </div>
-                            <button class="btn btn-primary builder-add-btn" on:click=add_to_cart_action>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square" style="margin-right: 8px;">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="12" y1="8" x2="12" y2="16"></line>
-                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                    <div style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 15px;">"$" {price_str}</div>
+
+                    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; font-size: 0.95rem;">{desc}</p>
+
+                    <h4 style="font-size: 0.9rem; color: #fff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">"Key Specifications"</h4>
+                    <ul style="list-style: none; margin-bottom: 30px; padding: 0;">
+                        {specs.into_iter().map(|spec| view! {
+                            <li style="display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 0.9rem; margin-bottom: 10px; line-height: 1.4;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary); flex-shrink: 0;">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
-                                "Add Custom Build"
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                                {spec}
+                            </li>
+                        }).collect_view()}
+                    </ul>
 
-                <div class="builder-controls-pane">
-                    <div class="glass-card">
-                        <div class="config-group-title">"1. Select Layout"</div>
-                        <div class="config-options-grid" style="grid-template-columns: 1fr; gap: 15px;">
-                            {layouts.into_iter().map(|(id, name, desc, base_price)| {
-                                let is_selected = move || selected_layout.get() == id;
-                                view! {
-                                    <div class=move || if is_selected() { "config-option-btn selected" } else { "config-option-btn" }
-                                         on:click=move |_| selected_layout.set(String::from(id))>
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <div class="config-option-name">{name}</div>
-                                            <div class="config-option-price">"$" {format!("{:.2}", base_price)}</div>
-                                        </div>
-                                        <div class="config-option-desc" style="margin-top: 5px;">{desc}</div>
-                                    </div>
-                                }
-                            }).collect_view()}
-                        </div>
-                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                        <a href=shopee target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                            "Buy on Shopee"
+                        </a>
 
-                    <div class="glass-card">
-                        <div class="config-group-title">"2. Case Filament Color"</div>
-                        <div class="color-options-row">
-                            {colors.into_iter().map(|(name, hex, glow)| {
-                                let is_selected = move || selected_color.get() == name;
-                                view! {
-                                    <div class=move || if is_selected() { "color-option-pill selected" } else { "color-option-pill" }
-                                         style=format!("background: {}; --glow-color: {};", hex, glow)
-                                         on:click=move |_| selected_color.set(String::from(name))
-                                         title=name>
-                                    </div>
-                                }
-                            }).collect_view()}
-                        </div>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">
-                            "Selected: " <strong style="color: #fff;">{selected_color}</strong>
-                        </p>
+                        {move || github.clone().map(|url| view! {
+                            <a href=url target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                </svg>
+                                "DIY Source (GitHub)"
+                            </a>
+                        })}
                     </div>
-
-                    <div class="glass-card">
-                        <div class="config-group-title">"3. Switch Option"</div>
-                        <div class="config-options-grid">
-                            {switches.into_iter().map(|(name, desc, addon)| {
-                                let is_selected = move || selected_switch.get() == name;
-                                view! {
-                                    <div class=move || if is_selected() { "config-option-btn selected" } else { "config-option-btn" }
-                                         on:click=move |_| selected_switch.set(String::from(name))>
-                                        <div class="config-option-name">{name}</div>
-                                        <div class="config-option-desc">{desc}</div>
-                                        <div class="config-option-price">
-                                            {if addon == 0.0 { String::from("Free") } else { format!("+${:.2}", addon) }}
-                                        </div>
-                                    </div>
-                                }
-                            }).collect_view()}
-                        </div>
-                    </div>
-
-                    <div class="glass-card">
-                        <div class="config-group-title">"4. Keycaps Profile"</div>
-                        <div class="config-options-grid">
-                            {keycaps.into_iter().map(|(name, desc, addon)| {
-                                let is_selected = move || selected_keycaps.get() == name;
-                                view! {
-                                    <div class=move || if is_selected() { "config-option-btn selected" } else { "config-option-btn" }
-                                         on:click=move |_| selected_keycaps.set(String::from(name))>
-                                        <div class="config-option-name">{name}</div>
-                                        <div class="config-option-desc">{desc}</div>
-                                        <div class="config-option-price">
-                                            {if addon == 0.0 { String::from("Free") } else { format!("+${:.2}", addon) }}
-                                        </div>
-                                    </div>
-                                }
-                            }).collect_view()}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                }
+            })}
+        </div>
     }
 }
 
@@ -946,56 +573,6 @@ fn AboutPage() -> impl IntoView {
     }
 }
 
-/* ==========================================
-Checkout Success Page Component
-========================================== */
-
-#[component]
-fn CheckoutSuccessPage() -> impl IntoView {
-    // Generate a random order number
-    let order_num = "OD-849204";
-
-    view! {
-        <SeoHead
-            title="open-diy Checkout Success".to_string()
-            description="Your open-diy order was received successfully.".to_string()
-            path="/checkout-success".to_string()
-            image_path="/images/dactyl.png".to_string()
-            robots="noindex,follow".to_string()
-        />
-        <div class="checkout-page">
-            <div class="success-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-            </div>
-
-            <h1 class="gradient-text" style="font-size: 2.5rem; margin-bottom: 15px;">"Order Received!"</h1>
-            <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 25px;">
-                "Thank you for backing open-diy hardware. We have queued your keyboard for printing."
-            </p>
-
-            <div class="glass-card" style="max-width: 450px; margin: 0 auto 40px auto; padding: 24px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                    <span>"Order Number"</span>
-                    <strong style="color: #fff;">{order_num}</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                    <span>"Estimated Print Time"</span>
-                    <strong style="color: #06b6d4;">"24 - 48 Hours"</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>"Status"</span>
-                    <strong style="color: var(--success);">"In Filament Queue"</strong>
-                </div>
-            </div>
-
-            <A href="/" attr:class="btn btn-primary">"Back to Home Page"</A>
-        </div>
-    }
-}
-
 #[component]
 fn NotFoundPage() -> impl IntoView {
     view! {
@@ -1036,7 +613,6 @@ fn Footer() -> impl IntoView {
                     <ul class="footer-links">
                         <li><A href="/">"Home"</A></li>
                         <li><A href="/shop">"Catalog Shop"</A></li>
-                        <li><A href="/builder">"Configurator"</A></li>
                         <li><A href="/about">"Philosophy"</A></li>
                         <li><a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer">"Shopee Store"</a></li>
                     </ul>
