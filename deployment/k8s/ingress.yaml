@@ -25,3 +25,14 @@ spec:
                 name: open-diy-service
                 port:
                   number: 80
+    - host: shop.opendiy.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: open-diy-service
+                port:
+                  number: 80
+
