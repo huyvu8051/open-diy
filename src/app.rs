@@ -413,6 +413,20 @@ fn CatalogPage() -> impl IntoView {
             "/shop",
             149.0,
         )/>
+        <JsonLd json=product_json_ld(
+            "Corne Cherry Split",
+            "Ultra-compact 40% split ergonomic keyboard with customizable OLED screens and RGB underglow.",
+            "/images/corne.png",
+            "/shop",
+            129.0,
+        )/>
+        <JsonLd json=product_json_ld(
+            "Dactyl Walnut Wrist Rests",
+            "Premium handcrafted walnut wood wrist rests sculpted to fit the curves of the Dactyl-Manuform.",
+            "/images/wristrests.png",
+            "/shop",
+            39.0,
+        )/>
         <section class="catalog-section">
             <div class="section-header">
                 <span class="hero-tag" style="margin-bottom: 12px;">"Catalog"</span>
@@ -469,6 +483,38 @@ fn CatalogPage() -> impl IntoView {
                         <div class="product-meta">
                             <span class="product-price">"From $149.00"</span>
                             <A href="/builder?preset=alice" attr:class="btn btn-primary btn-sm">"Customize"</A>
+                        </div>
+                    </div>
+                </div>
+
+                // Product 4
+                <div class="glass-card product-card">
+                    <div class="product-image-wrapper">
+                        <span class="product-tag">"Ultra-Compact"</span>
+                        <img src="/images/corne.png" alt="Corne split mechanical keyboard 40 percent" loading="lazy" decoding="async"/>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">"Corne Cherry Split"</h3>
+                        <p class="product-desc">"Ultra-compact 40% split layout. Highly optimized mapping, customized dual OLED displays, and brilliant customizable RGB underglow."</p>
+                        <div class="product-meta">
+                            <span class="product-price">"From $129.00"</span>
+                            <A href="/builder" attr:class="btn btn-primary btn-sm">"Customize"</A>
+                        </div>
+                    </div>
+                </div>
+
+                // Product 5
+                <div class="glass-card product-card">
+                    <div class="product-image-wrapper">
+                        <span class="product-tag">"Accessories"</span>
+                        <img src="/images/wristrests.png" alt="Ergonomic wooden split wrist rests" loading="lazy" decoding="async"/>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">"Dactyl Walnut Wrist Rests"</h3>
+                        <p class="product-desc">"Handcrafted premium American Walnut wood. Artfully sculpted and contoured to perfectly match Dactyl Manuform split casings."</p>
+                        <div class="product-meta">
+                            <span class="product-price">"From $39.00"</span>
+                            <A href="/shop" attr:class="btn btn-secondary btn-sm">"View Details"</A>
                         </div>
                     </div>
                 </div>
