@@ -73,9 +73,8 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore(open-diy): update image to ${{ github.sha }}
-
-Triggered by: ${{ github.repository }}@${{ github.sha }}
-Workflow: ${{ github.workflow }}"
+            git commit -m "chore(open-diy): update image to ${{ github.sha }}" \
+                       -m "Triggered by: ${{ github.repository }}@${{ github.sha }}" \
+                       -m "Workflow: ${{ github.workflow }}"
             git push
           fi
