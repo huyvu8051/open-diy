@@ -114,3 +114,19 @@ window.playSwitchSound = function(type) {
         console.error("Web Audio API not supported or user interaction required:", e);
     }
 }
+
+window.orderConfiguration = function(productName, caseColor, keycapColor, cableColor) {
+    const text = `Chào Open-DIY! Tôi muốn đặt hàng sản phẩm "${productName}" với cấu hình tùy biến:\n- Màu vỏ phím: ${caseColor}\n- Phối màu Keycaps: ${keycapColor}\n- Loại cáp kết nối: ${cableColor}\n\n(Đã chọn cấu hình từ website shop.opendiy.vn)`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Đã tự động sao chép cấu hình tùy biến của bạn! Bấm OK để mở Messenger chat và gửi tin nhắn đặt hàng.");
+        window.open("https://m.me/1111759575360830", "_blank");
+    }).catch(err => {
+        console.error("Lỗi khi sao chép:", err);
+        // Fallback
+        alert(`Đã có lỗi khi tự động sao chép. Vui lòng nhắn tin cấu hình sau cho chúng tôi:\n\n${text}`);
+        window.open("https://m.me/1111759575360830", "_blank");
+    });
+}
+

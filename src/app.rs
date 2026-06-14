@@ -302,6 +302,9 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
+                <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
                 <AutoReload options=options.clone() />
                 <HydrationScripts options/>
                 <MetaTags/>
@@ -343,18 +346,8 @@ pub fn App() -> impl IntoView {
                 </main>
                 <Footer/>
 
-                // Floating Messenger Chat Widget
-                <a 
-                    href="https://m.me/1111759575360830" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="messenger-float-btn"
-                    title="Chat with us on Messenger"
-                >
-                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.14 2 11.25c0 2.91 1.45 5.51 3.75 7.15.19.14.31.36.31.6l-.02 1.89c-.01.48.51.81.93.57l2.12-1.22c.17-.1.38-.11.56-.05 1.44.43 2.97.66 4.55.66 5.52 0 10-4.14 10-9.25S17.52 2 12 2zm1.18 11.63l-2.02-2.15-3.92 2.15c-.41.22-.89-.24-.65-.65l2.02-3.48 2.02 2.15 3.92-2.15c.41-.22.89.24.65.65l-2.02 3.48z"/>
-                    </svg>
-                </a>
+                // Floating AI CSKH Assistant
+                <AiAssistant/>
             </Router>
         </div>
     }
@@ -377,18 +370,13 @@ fn Navbar() -> impl IntoView {
     view! {
         <nav class="navbar">
             <A href="/" attr:class="nav-brand">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu" style="margin-right: 5px; color: #8b5cf6;">
-                    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                    <rect x="9" y="9" width="6" height="6"></rect>
-                    <line x1="9" y1="1" x2="9" y2="4"></line>
-                    <line x1="15" y1="1" x2="15" y2="4"></line>
-                    <line x1="9" y1="20" x2="9" y2="23"></line>
-                    <line x1="15" y1="20" x2="15" y2="23"></line>
-                    <line x1="20" y1="9" x2="23" y2="9"></line>
-                    <line x1="20" y1="15" x2="23" y2="15"></line>
-                    <line x1="1" y1="9" x2="4" y2="9"></line>
-                    <line x1="1" y1="15" x2="4" y2="15"></line>
-                </svg>
+                <img
+                    src="/images/logo_dark.png"
+                    alt="Open-DIY Logo"
+                    width="40"
+                    height="40"
+                    style="display: block; object-fit: contain; flex-shrink: 0;"
+                />
                 "open-diy"
             </A>
             <ul class="nav-menu">
@@ -464,7 +452,7 @@ fn HomePage() -> impl IntoView {
                 <A href="/about" attr:class="btn btn-secondary">{t!(lang, "Our Philosophy", "Triết lý thiết kế")}</A>
             </div>
             <div class="hero-visual">
-                <img src="/images/dactyl.png" alt="Dactyl Manuform Custom Keyboard"/>
+                <img src="/images/dactyl.png" alt="Dactyl Manuform Custom Keyboard" fetchpriority="high"/>
             </div>
         </div>
 
@@ -668,10 +656,67 @@ enum ActiveTab {
 }
 
 #[component]
-fn KeyboardCustomizer(lang: RwSignal<Language>) -> impl IntoView {
+fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: String) -> impl IntoView {
     let (case_color, set_case_color) = signal("#18181b".to_string());
     let (keycap_color, set_keycap_color) = signal("#4b5563".to_string());
     let (cable_color, set_cable_color) = signal("#09090b".to_string());
+    let prod_name = product_name.clone();
+    let order_click = move |_| {
+        #[cfg(target_arch = "wasm32")]
+        {
+            let get_case_name = move |hex: &str| -> String {
+                match hex {
+                    "#18181b" => "Stealth Black".to_string(),
+                    "#14532d" => "Forest Green".to_string(),
+                    "#db2777" => "Neon Pink".to_string(),
+                    "#f4f4f5" => "Frosted White".to_string(),
+                    "#0284c7" => "Cyber Blue".to_string(),
+                    _ => hex.to_string()
+                }
+            };
+
+            let get_keycap_name = move |hex: &str| -> String {
+                match hex {
+                    "#4b5563" => "Charcoal".to_string(),
+                    "#e4e4e7" => "Classic Chalk".to_string(),
+                    "#0891b2" => "Neon Cyan".to_string(),
+                    "#7c3aed" => "Lavender".to_string(),
+                    "#ea580c" => "Pastel Orange".to_string(),
+                    _ => hex.to_string()
+                }
+            };
+
+            let get_cable_name = move |hex: &str| -> String {
+                match hex {
+                    "#09090b" => "Stealth Black".to_string(),
+                    "#06b6d4" => "Cyan Coil".to_string(),
+                    "#8b5cf6" => "Violet Coil".to_string(),
+                    "#e11d48" => "Ruby Coil".to_string(),
+                    _ => hex.to_string()
+                }
+            };
+
+            let name = prod_name.clone();
+            let case = get_case_name(&case_color.get());
+            let keycap = get_keycap_name(&keycap_color.get());
+            let cable = get_cable_name(&cable_color.get());
+            let eval_str = format!(
+                "window.orderConfiguration('{}', '{}', '{}', '{}')", 
+                name.replace('\'', "\\'"), 
+                case.replace('\'', "\\'"), 
+                keycap.replace('\'', "\\'"), 
+                cable.replace('\'', "\\'")
+            );
+            let _ = js_sys::eval(&eval_str);
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let _ = prod_name;
+            let _ = case_color;
+            let _ = keycap_color;
+            let _ = cable_color;
+        }
+    };
 
     view! {
         <div class="customizer-container glass-card" style="display: grid; grid-template-columns: 1fr; gap: 30px; padding: 24px; border-radius: 16px;">
@@ -680,6 +725,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>) -> impl IntoView {
                 <h3 style="font-size: 1.15rem; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--secondary);">
                     {t!(lang, "Live Color Preview", "Xem trước màu sắc trực tiếp")}
                 </h3>
+
                 <svg width="100%" height="280" viewBox="0 0 600 300" style="background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: inset 0 0 40px rgba(0,0,0,0.6);">
                     // Coiled Cable
                     <path d="M 220 150 C 230 110, 240 110, 250 150 C 260 190, 270 190, 280 150 C 290 110, 300 110, 310 150 C 320 190, 330 190, 340 150 C 350 110, 360 110, 380 150" fill="none" stroke=move || cable_color.get() stroke-width="8" stroke-linecap="round" stroke-linejoin="round" style="transition: stroke 0.3s ease;"/>
@@ -817,6 +863,24 @@ fn KeyboardCustomizer(lang: RwSignal<Language>) -> impl IntoView {
                             }
                         }).collect_view()}
                     </div>
+                </div>
+
+                // Pre-order configuration action
+                <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 10px;">
+                    <button 
+                        on:click=order_click
+                        type="button"
+                        class="btn btn-primary"
+                        style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #0084FF, #00C6FF); border: none;"
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.14 2 11.25c0 2.91 1.45 5.51 3.75 7.15.19.14.31.36.31.6l-.02 1.89c-.01.48.51.81.93.57l2.12-1.22c.17-.1.38-.11.56-.05 1.44.43 2.97.66 4.55.66 5.52 0 10-4.14 10-9.25S17.52 2 12 2zm1.18 11.63l-2.02-2.15-3.92 2.15c-.41.22-.89-.24-.65-.65l2.02-3.48 2.02 2.15 3.92-2.15c.41-.22.89.24.65.65l-2.02 3.48z"/>
+                        </svg>
+                        {t!(lang, "Pre-order this Configuration", "Đặt mua cấu hình này")}
+                    </button>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; text-align: center; line-height: 1.4;">
+                        {t!(lang, "* The configuration will be copied to your clipboard.", "* Cấu hình chi tiết sẽ được tự động sao chép vào bộ nhớ tạm.")}
+                    </p>
                 </div>
             </div>
         </div>
@@ -1089,7 +1153,7 @@ fn ProductDetailPage() -> impl IntoView {
                             // Left Column - Image Gallery (Only gallery, no specs card to keep it clean)
                             <div class="builder-preview-pane">
                                 <div class="preview-image-container" style="aspect-ratio: 16/10; overflow: hidden; border-radius: var(--radius-lg); border: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
-                                    <img src=selected_img style="width: 100%; height: 100%; object-fit: cover;" alt=name.clone()/>
+                                    <img src=selected_img style="width: 100%; height: 100%; object-fit: cover;" alt=name.clone() fetchpriority="high"/>
                                 </div>
                                 
                                 // Thumbnail list
@@ -1130,13 +1194,26 @@ fn ProductDetailPage() -> impl IntoView {
                                     </div>
 
                                     <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 20px 0;">
-                                        <a href=shopee target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
+                                        <a href=shopee target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%; opacity: 0.85; display: flex; align-items: center; justify-content: center;">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
                                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                                                 <line x1="3" y1="6" x2="21" y2="6"></line>
                                                 <path d="M16 10a4 4 0 0 1-8 0"></path>
                                             </svg>
-                                            {t!(lang, "Customize & Buy on Shopee", "Tùy biến & Mua trên Shopee")}
+                                            {t!(lang, "Customize & Buy on Shopee (Coming Soon)", "Tùy biến & Mua trên Shopee (Sắp mở)")}
+                                        </a>
+
+                                        <a 
+                                            href="https://m.me/1111759575360830" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer" 
+                                            class="btn btn-primary" 
+                                            style="width: 100%; background: linear-gradient(135deg, #0084FF, #00C6FF); border: none; display: flex; align-items: center; justify-content: center;"
+                                        >
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+                                                <path d="M12 2C6.48 2 2 6.14 2 11.25c0 2.91 1.45 5.51 3.75 7.15.19.14.31.36.31.6l-.02 1.89c-.01.48.51.81.93.57l2.12-1.22c.17-.1.38-.11.56-.05 1.44.43 2.97.66 4.55.66 5.52 0 10-4.14 10-9.25S17.52 2 12 2zm1.18 11.63l-2.02-2.15-3.92 2.15c-.41.22-.89-.24-.65-.65l2.02-3.48 2.02 2.15 3.92-2.15c.41-.22.89.24.65.65l-2.02 3.48z"/>
+                                            </svg>
+                                            {t!(lang, "Order Direct via Messenger (Pre-order)", "Đặt hàng trực tiếp qua Messenger (Pre-order)")}
                                         </a>
                                         
                                         {move || github.clone().map(|url| view! {
@@ -1209,7 +1286,7 @@ fn ProductDetailPage() -> impl IntoView {
                             // Active Tab Content
                             <div class="tab-content" style="max-width: 800px; margin: 0 auto;">
                                 {move || match active_tab.get() {
-                                    ActiveTab::Customizer => view! { <KeyboardCustomizer lang=lang/> }.into_any(),
+                                    ActiveTab::Customizer => view! { <KeyboardCustomizer lang=lang product_name=name.clone()/> }.into_any(),
                                     ActiveTab::Estimator => view! { <HandEstimator lang=lang/> }.into_any(),
                                     ActiveTab::SoundTest => view! { <SoundTestPlayer lang=lang/> }.into_any(),
                                 }}
@@ -1384,6 +1461,201 @@ fn AboutPage() -> impl IntoView {
                 </div>
             </div>
         </div>
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct ChatMessage {
+    pub is_ai: bool,
+    pub text: String,
+}
+
+#[component]
+fn AiAssistant() -> impl IntoView {
+    let (is_open, set_is_open) = signal(false);
+    let (input, set_input) = signal(String::new());
+    
+    // Initial greeting
+    let initial_msg = ChatMessage {
+        is_ai: true,
+        text: "Xin chào! Tôi là Trợ lý AI của Open-DIY. Tôi có thể giúp bạn tìm hiểu về bàn phím Corne, Dactyl, tư vấn kích thước đo tay hoặc hướng dẫn đặt cọc. Bạn cần hỗ trợ gì hôm nay?".to_string(),
+    };
+    let (messages, set_messages) = signal(vec![initial_msg]);
+
+    let handle_send = move |text_val: String| {
+        if text_val.trim().is_empty() { return; }
+        
+        // Add user message
+        set_messages.update(|msgs| msgs.push(ChatMessage {
+            is_ai: false,
+            text: text_val.clone(),
+        }));
+        
+        set_input.set(String::new());
+        
+        // Find best match response
+        let text_lower = text_val.to_lowercase();
+        let response_text = if text_lower.contains("corne") {
+            "Bàn phím Corne Cherry Split là dòng phím tách đôi 40% (42 phím), có màn hình OLED hiển thị thông số và hệ thống LED RGB rực rỡ. Rất nhỏ gọn và phù hợp cho người có cỡ tay nhỏ đến trung bình. Giá từ $129.".to_string()
+        } else if text_lower.contains("dactyl") || text_lower.contains("manuform") {
+            "Bàn phím Dactyl-Manuform có thiết kế dạng lòng chảo cong 3D ôm sát theo hướng ngón tay, giúp giảm tối đa mỏi vai gáy và cổ tay. Phù hợp cho lập trình viên và người gõ phím cường độ cao. Giá từ $219.".to_string()
+        } else if text_lower.contains("bảo hành") || text_lower.contains("hỏng") || text_lower.contains("sửa") {
+            "Tất cả phím chính hãng Open-DIY đều được bảo hành phần cứng (mạch PCB, mối hàn, IC điều khiển) trong 12 tháng. Hỗ trợ sửa chữa trọn đời sản phẩm.".to_string()
+        } else if text_lower.contains("đo tay") || text_lower.contains("cỡ tay") || text_lower.contains("kích thước") {
+            "Bạn có thể dùng tính năng 'Đo kích thước tay' ngay tại trang sản phẩm trên website. Đo chiều dài ngón giữa và bề ngang lòng bàn tay để hệ thống tự động gợi ý phím Corne hay Dactyl phù hợp!".to_string()
+        } else if text_lower.contains("sound") || text_lower.contains("âm thanh") || text_lower.contains("gõ thử") {
+            "Chúng tôi có bộ phát thử âm thanh switch (Linear, Tactile, Clicky) tích hợp sẵn trong trang chi tiết sản phẩm. Bạn hãy ghé xem sản phẩm và bấm tab 'Thử âm thanh switch' để nghe nhé!".to_string()
+        } else if text_lower.contains("cọc") || text_lower.contains("mua") || text_lower.contains("đặt") || text_lower.contains("thanh toán") {
+            "Quy trình đặt mua của chúng tôi: Bạn chọn màu sắc vỏ/keycap trên trang web, copy cấu hình gửi qua Messenger và chuyển khoản cọc 50%. Shop sẽ tiến hành lắp ráp thủ công trong 3-5 ngày và ship COD phần còn lại.".to_string()
+        } else {
+            "Tôi chưa hiểu rõ câu hỏi của bạn. Bạn có thể hỏi về: Corne, Dactyl, Đo tay, Sound test, Bảo hành, hoặc nhấn 'Trò chuyện trực tiếp' để gửi tin nhắn đến Messenger của shop nhé!".to_string()
+        };
+
+        // Add AI response immediately
+        set_messages.update(|msgs| msgs.push(ChatMessage {
+            is_ai: true,
+            text: response_text,
+        }));
+    };
+    
+    let send_suggestion = move |text: &'static str| {
+        let t = text.to_string();
+        handle_send(t);
+    };
+
+    view! {
+        // AI Float Button
+        <button 
+            on:click=move |_| set_is_open.update(|open| *open = !*open)
+            type="button"
+            class="messenger-float-btn"
+            style="border: none; background: linear-gradient(135deg, #8b5cf6, #06b6d4); box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4); display: flex; align-items: center; justify-content: center;"
+            title="Chat with Open-DIY AI Support"
+        >
+            {move || if is_open.get() {
+                view! {
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                }.into_any()
+            } else {
+                view! {
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                        <path d="M12 2a2 2 0 012 2v1h4a2 2 0 012 2v10a2 2 0 01-2 2h-4v1a2 2 0 01-4 0v-1H6a2 2 0 01-2-2V7a2 2 0 012-2h4V4a2 2 0 012-2zm6 5H6v10h12V7zm-9 2a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm6 0a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm-6 5h6v1.5H9V14z"/>
+                    </svg>
+                }.into_any()
+            }}
+        </button>
+
+        // AI Chat Overlay
+        {move || if is_open.get() {
+            view! {
+                <div class="glass-card" style="position: fixed; bottom: 100px; right: 30px; width: 360px; height: 500px; display: flex; flex-direction: column; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 12px 40px rgba(0,0,0,0.5); z-index: 9998; overflow: hidden; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);">
+                    // Header
+                    <div style="padding: 16px; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2)); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; text-align: left;">
+                        <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e;"></span>
+                        <div>
+                            <h4 style="margin: 0; font-size: 0.95rem; color: #fff; font-weight: 600;">"Trợ lý AI Open-DIY"</h4>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">"CSKH Hỗ trợ 24/7"</span>
+                        </div>
+                    </div>
+
+                    // Messages list
+                    <div style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; text-align: left;" id="ai-chat-messages">
+                        {move || messages.get().into_iter().map(|msg| {
+                            let (bg, align, text_color, rounded) = if msg.is_ai {
+                                ("rgba(255,255,255,0.05)", "flex-start", "#fff", "12px 12px 12px 2px")
+                            } else {
+                                ("linear-gradient(135deg, #8b5cf6, #7c3aed)", "flex-end", "#fff", "12px 12px 2px 12px")
+                            };
+                            view! {
+                                <div style=format!("align-self: {}; max-width: 80%; background: {}; color: {}; padding: 10px 14px; border-radius: {}; font-size: 0.85rem; line-height: 1.4; border: {}", align, bg, text_color, rounded, if msg.is_ai { "1px solid var(--border-color)" } else { "none" })>
+                                    {msg.text}
+                                </div>
+                            }
+                        }).collect_view()}
+                    </div>
+
+                    // Suggestion Chips
+                    <div style="padding: 8px 16px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.03); justify-content: flex-start;">
+                        <button 
+                            on:click=move |_| send_suggestion("Tìm hiểu phím Corne Split")
+                            type="button"
+                            style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
+                        >
+                            "⌨️ Phím Corne"
+                        </button>
+                        <button 
+                            on:click=move |_| send_suggestion("Tìm hiểu phím Dactyl-Manuform")
+                            type="button"
+                            style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
+                        >
+                            "👑 Phím Dactyl"
+                        </button>
+                        <button 
+                            on:click=move |_| send_suggestion("Làm sao để đo kích thước tay?")
+                            type="button"
+                            style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
+                        >
+                            "📏 Đo tay"
+                        </button>
+                        <button 
+                            on:click=move |_| send_suggestion("Chính sách đặt cọc và mua hàng")
+                            type="button"
+                            style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
+                        >
+                            "💳 Đặt cọc"
+                        </button>
+                    </div>
+
+                    // Footer Input
+                    <form 
+                        on:submit=move |ev| {
+                            ev.prevent_default();
+                            let val = input.get();
+                            if !val.trim().is_empty() {
+                                handle_send(val);
+                            }
+                        }
+                        style="padding: 12px 16px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background: rgba(0,0,0,0.2);"
+                    >
+                        <input 
+                            type="text"
+                            placeholder="Nhập câu hỏi..."
+                            prop:value=input
+                            on:input=move |ev| set_input.set(event_target_value(&ev))
+                            style="flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; color: #fff; outline: none; transition: border 0.2s;"
+                        />
+                        <button 
+                            type="submit"
+                            class="btn btn-primary btn-sm"
+                            style="padding: 0 14px; border-radius: 8px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border: none; display: flex; align-items: center; justify-content: center;"
+                        >
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </form>
+
+                    // Direct Messenger Link
+                    <div style="padding: 8px; text-align: center; background: rgba(0,84,255,0.1); border-top: 1px solid rgba(255,255,255,0.03);">
+                        <a 
+                            href="https://m.me/1111759575360830" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            style="font-size: 0.72rem; color: #0084ff; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;"
+                        >
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.14 2 11.25c0 2.91 1.45 5.51 3.75 7.15.19.14.31.36.31.6l-.02 1.89c-.01.48.51.81.93.57l2.12-1.22c.17-.1.38-.11.56-.05 1.44.43 2.97.66 4.55.66 5.52 0 10-4.14 10-9.25S17.52 2 12 2zm1.18 11.63l-2.02-2.15-3.92 2.15c-.41.22-.89-.24-.65-.65l2.02-3.48 2.02 2.15 3.92-2.15c.41-.22.89.24.65.65l-2.02 3.48z"/>
+                            </svg>
+                            "Hoặc trò chuyện trực tiếp với chủ shop"
+                        </a>
+                    </div>
+                </div>
+            }.into_any()
+        } else {
+            view! { <div/> }.into_any()
+        }}
     }
 }
 
