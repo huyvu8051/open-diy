@@ -2,8 +2,7 @@ import { test, expect } from "@playwright/test";
 
 // List of target production domains for traffic generation
 const targets = [
-  "http://open-diy.unghotoi.asia",
-  "http://open-diy.unghotui.vn"
+  "https://shop.opendiy.vn"
 ];
 
 for (const baseUrl of targets) {

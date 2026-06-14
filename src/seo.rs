@@ -3,7 +3,7 @@ use leptos_meta::{Link, Meta, Script, Title};
 use std::env;
 
 pub const SITE_NAME: &str = "open-diy";
-const DEFAULT_SITE_URL: &str = "https://open-diy.unghotui.vn";
+const DEFAULT_SITE_URL: &str = "https://shop.opendiy.vn";
 
 pub fn site_origin() -> String {
     env::var("SITE_URL")

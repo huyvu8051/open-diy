@@ -328,6 +328,7 @@ pub fn App() -> impl IntoView {
         <Stylesheet id="leptos" href="/pkg/open-diy.css"/>
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
+        <Script src="/js/audio.js" defer="true" />
 
         <div class="app-container">
             <Router>
@@ -659,6 +660,371 @@ fn CatalogPage() -> impl IntoView {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+enum ActiveTab {
+    Customizer,
+    Estimator,
+    SoundTest,
+}
+
+#[component]
+fn KeyboardCustomizer(lang: RwSignal<Language>) -> impl IntoView {
+    let (case_color, set_case_color) = signal("#18181b".to_string());
+    let (keycap_color, set_keycap_color) = signal("#4b5563".to_string());
+    let (cable_color, set_cable_color) = signal("#09090b".to_string());
+
+    view! {
+        <div class="customizer-container glass-card" style="display: grid; grid-template-columns: 1fr; gap: 30px; padding: 24px; border-radius: 16px;">
+            // Left Column: Interactive SVG Preview
+            <div class="customizer-preview" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
+                <h3 style="font-size: 1.15rem; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--secondary);">
+                    {t!(lang, "Live Color Preview", "Xem trước màu sắc trực tiếp")}
+                </h3>
+                <svg width="100%" height="280" viewBox="0 0 600 300" style="background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: inset 0 0 40px rgba(0,0,0,0.6);">
+                    // Coiled Cable
+                    <path d="M 220 150 C 230 110, 240 110, 250 150 C 260 190, 270 190, 280 150 C 290 110, 300 110, 310 150 C 320 190, 330 190, 340 150 C 350 110, 360 110, 380 150" fill="none" stroke=move || cable_color.get() stroke-width="8" stroke-linecap="round" stroke-linejoin="round" style="transition: stroke 0.3s ease;"/>
+                    
+                    // Left Hand Case (Curved split keyboard half)
+                    <path d="M 50 100 Q 130 70 210 100 Q 230 150 210 220 Q 130 250 50 220 Q 30 150 50 100 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="3" style="transition: fill 0.3s ease;"/>
+                    // Left Thumb cluster
+                    <path d="M 180 180 Q 220 190 220 230 Q 180 250 150 230 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="2" style="transition: fill 0.3s ease;"/>
+                    
+                    // Right Hand Case
+                    <path d="M 550 100 Q 470 70 390 100 Q 370 150 390 220 Q 470 250 550 220 Q 570 150 550 100 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="3" style="transition: fill 0.3s ease;"/>
+                    // Right Thumb cluster
+                    <path d="M 420 180 Q 380 190 380 230 Q 420 250 450 230 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="2" style="transition: fill 0.3s ease;"/>
+                    
+                    // Left keycaps grid
+                    <rect x="75" y="115" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="75" y="138" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="75" y="161" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="97" y="110" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="97" y="133" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="97" y="156" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="119" y="105" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="119" y="128" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="119" y="151" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="141" y="110" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="141" y="133" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="141" y="156" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="163" y="115" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="163" y="138" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="163" y="161" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="175" y="195" width="16" height="24" rx="3" fill=move || keycap_color.get() transform="rotate(-15 175 195)" style="transition: fill 0.3s ease;"/>
+                    <rect x="195" y="200" width="16" height="24" rx="3" fill=move || keycap_color.get() transform="rotate(-15 195 200)" style="transition: fill 0.3s ease;"/>
+
+                    // Right keycaps grid
+                    <rect x="509" y="115" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="509" y="138" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="509" y="161" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="487" y="110" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="487" y="133" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="487" y="156" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="465" y="105" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="465" y="128" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="465" y="151" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="443" y="110" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="443" y="133" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="443" y="156" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="421" y="115" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="421" y="138" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="421" y="161" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
+                    <rect x="409" y="195" width="16" height="24" rx="3" fill=move || keycap_color.get() transform="rotate(15 409 195)" style="transition: fill 0.3s ease;"/>
+                    <rect x="389" y="200" width="16" height="24" rx="3" fill=move || keycap_color.get() transform="rotate(15 389 200)" style="transition: fill 0.3s ease;"/>
+                </svg>
+            </div>
+
+            // Right Column: Controls
+            <div class="customizer-controls" style="display: flex; flex-direction: column; gap: 20px;">
+                // Case Color Selection
+                <div>
+                    <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+                        {t!(lang, "Case Color", "Màu Vỏ Phím")}
+                    </h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        {[
+                            ("#18181b", "Stealth Black"),
+                            ("#14532d", "Forest Green"),
+                            ("#db2777", "Neon Pink"),
+                            ("#f4f4f5", "Frosted White"),
+                            ("#0284c7", "Cyber Blue"),
+                        ].into_iter().map(|(val, name)| {
+                            let is_active = move || case_color.get() == val;
+                            view! {
+                                <button 
+                                    on:click=move |_| set_case_color.set(val.to_string())
+                                    type="button"
+                                    class=move || if is_active() { "btn btn-primary btn-sm" } else { "btn btn-secondary btn-sm" }
+                                    style="padding: 6px 12px; font-size: 0.8rem;"
+                                >
+                                    {name}
+                                </button>
+                            }
+                        }).collect_view()}
+                    </div>
+                </div>
+
+                // Keycap Color Selection
+                <div>
+                    <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+                        {t!(lang, "Keycap Theme", "Màu Nút (Keycaps)")}
+                    </h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        {[
+                            ("#4b5563", "Charcoal"),
+                            ("#e4e4e7", "Classic Chalk"),
+                            ("#0891b2", "Neon Cyan"),
+                            ("#7c3aed", "Lavender"),
+                            ("#ea580c", "Pastel Orange"),
+                        ].into_iter().map(|(val, name)| {
+                            let is_active = move || keycap_color.get() == val;
+                            view! {
+                                <button 
+                                    on:click=move |_| set_keycap_color.set(val.to_string())
+                                    type="button"
+                                    class=move || if is_active() { "btn btn-primary btn-sm" } else { "btn btn-secondary btn-sm" }
+                                    style="padding: 6px 12px; font-size: 0.8rem;"
+                                >
+                                    {name}
+                                </button>
+                            }
+                        }).collect_view()}
+                    </div>
+                </div>
+
+                // Cable Selection
+                <div>
+                    <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+                        {t!(lang, "USB-C Coiled Cable", "Cáp Xoắn Kết Nối")}
+                    </h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        {[
+                            ("#09090b", "Stealth Black"),
+                            ("#06b6d4", "Cyan Coil"),
+                            ("#8b5cf6", "Violet Coil"),
+                            ("#e11d48", "Ruby Coil"),
+                        ].into_iter().map(|(val, name)| {
+                            let is_active = move || cable_color.get() == val;
+                            view! {
+                                <button 
+                                    on:click=move |_| set_cable_color.set(val.to_string())
+                                    type="button"
+                                    class=move || if is_active() { "btn btn-primary btn-sm" } else { "btn btn-secondary btn-sm" }
+                                    style="padding: 6px 12px; font-size: 0.8rem;"
+                                >
+                                    {name}
+                                </button>
+                            }
+                        }).collect_view()}
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+#[component]
+fn HandEstimator(lang: RwSignal<Language>) -> impl IntoView {
+    let (finger_len, set_finger_len) = signal(7.5);
+    let (palm_width, set_palm_width) = signal(8.5);
+
+    let recommendation = move || {
+        let fl = finger_len.get();
+        let pw = palm_width.get();
+        let current_lang = lang.get();
+        if fl < 6.8 || pw < 7.5 {
+            (
+                match current_lang {
+                    Language::En => "Corne Cherry Split (42 keys)",
+                    Language::Vi => "Bàn phím Corne Cherry Split (42 phím)",
+                },
+                match current_lang {
+                    Language::En => "With smaller hands, a 40% split layout keeps keys close and eliminates finger stretching. This minimizes muscle fatigue.",
+                    Language::Vi => "Với kích thước bàn tay nhỏ, layout split 40% giúp phím luôn trong tầm tay, loại bỏ việc với ngón gây căng cơ.",
+                },
+                "Hand Size: Small / Fit: Ultra-Compact"
+            )
+        } else if fl > 8.5 || pw > 9.5 {
+            (
+                match current_lang {
+                    Language::En => "Dactyl-ManuForm 5x6 (Extended Cluster)",
+                    Language::Vi => "Bàn phím Dactyl-ManuForm 5x6 (Bản mở rộng)",
+                },
+                match current_lang {
+                    Language::En => "Larger hands are perfectly supported by the sculptured 3D keywells of the Dactyl 5x6. The deep hand-scaffolding provides natural curvature.",
+                    Language::Vi => "Bàn tay lớn được nâng đỡ hoàn hảo bởi các lòng chảo 3D của dòng Dactyl 5x6. Độ võng sâu giúp các ngón tay duỗi cong tự nhiên.",
+                },
+                "Hand Size: Large / Fit: Extended Comfort"
+            )
+        } else {
+            (
+                match current_lang {
+                    Language::En => "Dactyl-ManuForm 5x6 or Alice Curved",
+                    Language::Vi => "Dactyl-ManuForm 5x6 hoặc Alice Curved",
+                },
+                match current_lang {
+                    Language::En => "Your standard hand dimensions are highly versatile. The Dactyl 5x6 offers ultimate ergonomics, while Alice Curved offers a shorter learning curve.",
+                    Language::Vi => "Số đo tay tiêu chuẩn của bạn cực kỳ linh hoạt. Dactyl 5x6 mang lại công thái học tối đa, còn Alice Curved là lựa chọn dễ làm quen nhất.",
+                },
+                "Hand Size: Medium / Fit: Ergonomic Standard"
+            )
+        }
+    };
+
+    view! {
+        <div class="estimator-container glass-card" style="padding: 24px; border-radius: 16px; display: grid; grid-template-columns: 1fr; gap: 30px;">
+            // Controls Input Panel
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <h3 style="font-size: 1.15rem; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--secondary);">
+                    {t!(lang, "Enter Hand Dimensions", "Nhập kích thước bàn tay")}
+                </h3>
+                
+                // Slide 1: Middle Finger Length
+                <div class="slider-group" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="color: var(--text-muted);">{t!(lang, "Middle Finger Length", "Chiều dài ngón giữa")}</span>
+                        <span style="color: #fff; font-weight: 600;">{move || format!("{:.1} cm", finger_len.get())}</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        min="5.0" 
+                        max="11.0" 
+                        step="0.1" 
+                        value=move || finger_len.get().to_string()
+                        on:input=move |ev| {
+                            if let Ok(val) = event_target_value(&ev).parse::<f64>() {
+                                set_finger_len.set(val);
+                            }
+                        }
+                        style="width: 100%; accent-color: var(--secondary); cursor: pointer;"
+                    />
+                </div>
+
+                // Slide 2: Palm Width
+                <div class="slider-group" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span style="color: var(--text-muted);">{t!(lang, "Palm Width", "Chiều rộng lòng bàn tay")}</span>
+                        <span style="color: #fff; font-weight: 600;">{move || format!("{:.1} cm", palm_width.get())}</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        min="6.0" 
+                        max="12.0" 
+                        step="0.1" 
+                        value=move || palm_width.get().to_string()
+                        on:input=move |ev| {
+                            if let Ok(val) = event_target_value(&ev).parse::<f64>() {
+                                set_palm_width.set(val);
+                            }
+                        }
+                        style="width: 100%; accent-color: var(--secondary); cursor: pointer;"
+                    />
+                </div>
+            </div>
+
+            // Recommendation Display Panel
+            <div class="estimator-result" style="background: rgba(0,0,0,0.25); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+                <span class="hero-tag" style="align-self: flex-start; margin-bottom: 0; font-size: 0.75rem; padding: 4px 10px;">
+                    {move || recommendation().2}
+                </span>
+                <h4 style="font-size: 1.4rem; color: #fff; margin: 0; line-height: 1.2;">
+                    {move || recommendation().0}
+                </h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; text-align: justify; margin: 0;">
+                    {move || recommendation().1}
+                </p>
+                <div style="border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 5px; font-size: 0.8rem; color: var(--secondary); display: flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span>{t!(lang, "Optimized for anatomical alignment", "Được tối ưu hóa theo cấu trúc sinh học cổ tay")}</span>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+#[component]
+fn SoundTestPlayer(lang: RwSignal<Language>) -> impl IntoView {
+    let play_sound = move |sound_type: &'static str| {
+        #[cfg(target_arch = "wasm32")]
+        {
+            let eval_str = format!("window.playSwitchSound('{}')", sound_type);
+            let _ = js_sys::eval(&eval_str);
+        }
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            let _ = sound_type;
+        }
+    };
+
+    view! {
+        <div class="sound-test-container glass-card" style="padding: 24px; border-radius: 16px; display: flex; flex-direction: column; gap: 20px;">
+            <h3 style="font-size: 1.15rem; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--secondary);">
+                {t!(lang, "Switch Sound Acoustics", "Thử nghiệm âm thanh gõ Switch")}
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
+                {t!(lang, 
+                   "Click any switch to simulate its mechanical acoustic sound test synthesized live using Web Audio API.", 
+                   "Click vào từng loại switch để nghe thử âm thanh gõ cơ học được giả lập trực tiếp qua Web Audio API."
+                )}
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 10px;">
+                // Yellow Linear Switch
+                <button 
+                    on:click=move |_| play_sound("linear")
+                    type="button"
+                    class="sound-card-btn"
+                    style="background: rgba(234, 179, 8, 0.05); border: 1px solid rgba(234, 179, 8, 0.2); border-radius: 12px; padding: 18px; text-align: left; cursor: pointer; transition: all 0.2s;"
+                >
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <span style="width: 14px; height: 14px; background: #eab308; border-radius: 4px; box-shadow: 0 0 8px #eab308;"></span>
+                        <h4 style="margin: 0; font-size: 1rem; color: #fff;">"Linear (Yellow)"</h4>
+                    </div>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                        {t!(lang, "Deep, silent, thocky tone. Smooth keypress travel.", "Âm thanh trầm ấm (Thocky), gõ êm mượt không có khấc cản.")}
+                    </p>
+                </button>
+
+                // Brown Tactile Switch
+                <button 
+                    on:click=move |_| play_sound("tactile")
+                    type="button"
+                    class="sound-card-btn"
+                    style="background: rgba(139, 92, 26, 0.05); border: 1px solid rgba(139, 92, 26, 0.2); border-radius: 12px; padding: 18px; text-align: left; cursor: pointer; transition: all 0.2s;"
+                >
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <span style="width: 14px; height: 14px; background: #a16207; border-radius: 4px; box-shadow: 0 0 8px #a16207;"></span>
+                        <h4 style="margin: 0; font-size: 1rem; color: #fff;">"Tactile (Brown)"</h4>
+                    </div>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                        {t!(lang, "Moderate bump, round clack. Crisp tactile typing feedback.", "Cực kỳ cơ học với khấc cản nhẹ. Âm thanh clack tròn trịa.")}
+                    </p>
+                </button>
+
+                // Blue Clicky Switch
+                <button 
+                    on:click=move |_| play_sound("clicky")
+                    type="button"
+                    class="sound-card-btn"
+                    style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 12px; padding: 18px; text-align: left; cursor: pointer; transition: all 0.2s;"
+                >
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <span style="width: 14px; height: 14px; background: #06b6d4; border-radius: 4px; box-shadow: 0 0 8px #06b6d4;"></span>
+                        <h4 style="margin: 0; font-size: 1rem; color: #fff;">"Clicky (Blue)"</h4>
+                    </div>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                        {t!(lang, "Loud double-click snap. High pitched typewriter tone.", "Âm thanh click đanh giòn như tiếng máy đánh chữ truyền thống.")}
+                    </p>
+                </button>
+            </div>
+        </div>
+    }
+}
+
 /* ==========================================
 Product Detail Page Component
 ========================================== */
@@ -674,6 +1040,8 @@ fn ProductDetailPage() -> impl IntoView {
         let id = product_id();
         get_products().into_iter().find(|p| p.id == id)
     };
+
+    let (active_tab, set_active_tab) = signal(ActiveTab::Customizer);
 
     view! {
         {move || {
@@ -797,6 +1165,54 @@ fn ProductDetailPage() -> impl IntoView {
                                         </ul>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        // Interactive Experience Section (Tabs)
+                        <div class="interactive-experience-section" style="margin-top: 60px; margin-bottom: 20px;">
+                            <div class="section-header">
+                                <span class="hero-tag" style="margin-bottom: 12px;">{t!(lang, "Hands-On", "Tương tác")}</span>
+                                <h2 class="section-title">
+                                    {t!(lang, "Interactive ", "Trải nghiệm ")}
+                                    <span class="gradient-text">{t!(lang, "Studio", "Trực quan")}</span>
+                                </h2>
+                                <p class="section-subtitle">
+                                    {t!(lang, "Choose colors, calculate hand ergonomics, and listen to switch click acoustics.", "Chọn màu sắc, ước tính kích thước tay công thái học và nghe thử âm thanh switch.")}
+                                </p>
+                            </div>
+
+                            // Tab Buttons
+                            <div class="tabs-nav" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                                <button 
+                                    on:click=move |_| set_active_tab.set(ActiveTab::Customizer)
+                                    type="button"
+                                    class=move || if active_tab.get() == ActiveTab::Customizer { "btn btn-primary" } else { "btn btn-secondary" }
+                                >
+                                    {t!(lang, "Color Customizer", "Bộ phối màu phím")}
+                                </button>
+                                <button 
+                                    on:click=move |_| set_active_tab.set(ActiveTab::Estimator)
+                                    type="button"
+                                    class=move || if active_tab.get() == ActiveTab::Estimator { "btn btn-primary" } else { "btn btn-secondary" }
+                                >
+                                    {t!(lang, "Hand Size Estimator", "Đo kích thước tay")}
+                                </button>
+                                <button 
+                                    on:click=move |_| set_active_tab.set(ActiveTab::SoundTest)
+                                    type="button"
+                                    class=move || if active_tab.get() == ActiveTab::SoundTest { "btn btn-primary" } else { "btn btn-secondary" }
+                                >
+                                    {t!(lang, "Switch Sound Acoustics", "Thử âm thanh switch")}
+                                </button>
+                            </div>
+
+                            // Active Tab Content
+                            <div class="tab-content" style="max-width: 800px; margin: 0 auto;">
+                                {move || match active_tab.get() {
+                                    ActiveTab::Customizer => view! { <KeyboardCustomizer lang=lang/> }.into_any(),
+                                    ActiveTab::Estimator => view! { <HandEstimator lang=lang/> }.into_any(),
+                                    ActiveTab::SoundTest => view! { <SoundTestPlayer lang=lang/> }.into_any(),
+                                }}
                             </div>
                         </div>
 
