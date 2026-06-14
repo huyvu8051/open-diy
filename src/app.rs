@@ -341,6 +341,19 @@ pub fn App() -> impl IntoView {
                     </Routes>
                 </main>
                 <Footer/>
+
+                // Floating Messenger Chat Widget
+                <a 
+                    href="https://m.me/1111759575360830" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="messenger-float-btn"
+                    title="Chat with us on Messenger"
+                >
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.14 2 11.25c0 2.91 1.45 5.51 3.75 7.15.19.14.31.36.31.6l-.02 1.89c-.01.48.51.81.93.57l2.12-1.22c.17-.1.38-.11.56-.05 1.44.43 2.97.66 4.55.66 5.52 0 10-4.14 10-9.25S17.52 2 12 2zm1.18 11.63l-2.02-2.15-3.92 2.15c-.41.22-.89-.24-.65-.65l2.02-3.48 2.02 2.15 3.92-2.15c.41-.22.89.24.65.65l-2.02 3.48z"/>
+                    </svg>
+                </a>
             </Router>
         </div>
     }
