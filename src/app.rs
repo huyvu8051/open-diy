@@ -1021,6 +1021,28 @@ fn Footer() -> impl IntoView {
                     </ul>
                 </div>
                 <div class="footer-col">
+                    <h4>{t!(lang, "Social Media", "Mạng xã hội")}</h4>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="https://www.facebook.com/1111759575360830" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary);">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                </svg>
+                                "Facebook Page"
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/@opendiyvn" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary);">
+                                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                                </svg>
+                                "YouTube Channel"
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-col">
                     <h4>{t!(lang, "3D Print Hub", "Trung tâm in 3D")}</h4>
                     <p style="margin-bottom: 10px;">{t!(lang, "Prusa XL CoreXY Farms", "Trang trại máy in Prusa XL CoreXY")}</p>
                     <p style="margin-bottom: 10px;">{t!(lang, "Polymaker PETG/ASA filaments", "Sợi nhựa Polymaker PETG/ASA")}</p>
