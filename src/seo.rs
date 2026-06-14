@@ -41,7 +41,6 @@ pub fn sitemap_xml() -> String {
     let urls = [
         ("/", "1.0", "weekly"),
         ("/shop", "0.9", "weekly"),
-        ("/builder", "0.8", "weekly"),
         ("/about", "0.7", "monthly"),
     ];
 
@@ -65,7 +64,7 @@ pub fn sitemap_xml() -> String {
 
 pub fn organization_json_ld() -> String {
     format!(
-        r#"{{"@context":"https://schema.org","@type":"Organization","name":"{}","url":"{}","logo":"{}","image":"{}","sameAs":["https://github.com/leptos-rs/start-axum"]}}"#,
+        r#"{{"@context":"https://schema.org","@type":"Organization","name":"{}","url":"{}","logo":"{}","image":"{}","sameAs":["https://www.facebook.com/1111759575360830","https://www.youtube.com/@opendiyvn"]}}"#,
         SITE_NAME,
         site_origin(),
         absolute_url("/favicon.ico"),
