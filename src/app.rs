@@ -370,13 +370,16 @@ fn Navbar() -> impl IntoView {
     view! {
         <nav class="navbar">
             <A href="/" attr:class="nav-brand">
-                <img
-                    src="/images/logo_dark.png"
-                    alt="Open-DIY Logo"
-                    width="40"
-                    height="40"
-                    style="display: block; object-fit: contain; flex-shrink: 0;"
-                />
+                <picture>
+                    <source srcset="/images/logo_dark.png" media="(prefers-color-scheme: dark)"/>
+                    <img
+                        src="/images/logo_light.png"
+                        alt="Open-DIY Logo"
+                        width="40"
+                        height="40"
+                        style="display: block; object-fit: contain; flex-shrink: 0;"
+                    />
+                </picture>
                 "open-diy"
             </A>
             <ul class="nav-menu">
