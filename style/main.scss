@@ -1448,12 +1448,16 @@ html.light {
   }
   
   .navbar {
-    padding: 0 5%;
-    height: 70px;
+    padding: 0 16px;
+    height: 60px;
   }
   
   .nav-brand {
     font-size: 1.35rem;
+  }
+
+  .main-content {
+    margin-top: 60px;
   }
 }
 

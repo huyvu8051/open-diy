@@ -537,7 +537,7 @@ fn Navbar() -> impl IntoView {
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                 </button>
-                <div style="display: flex; gap: 6px; font-size: 0.85rem; font-weight: 600;">
+                <div class="desktop-only" style="gap: 6px; font-size: 0.85rem; font-weight: 600;">
                     <button
                         on:click=toggle_vi
                         type="button"
@@ -587,8 +587,43 @@ fn Navbar() -> impl IntoView {
                     <li><A on:click=toggle_menu href="/" attr:class="mobile-nav-link">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
                     <li><A on:click=toggle_menu href="/shop" attr:class="mobile-nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
                     <li><A on:click=toggle_menu href="/about" attr:class="mobile-nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
-                    <li style="margin-top: 20px; width: 100%;">
-                        <a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="width: 100%; text-align: center; display: block; padding: 12px;">
+                    
+                    // Mobile Language Selector
+                    <li style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                        <div style="display: flex; justify-content: center; gap: 20px; font-size: 1rem; font-weight: 600;">
+                            <button
+                                on:click=move |_| {
+                                    lang.set(Language::Vi);
+                                    menu_open.set(false);
+                                }
+                                type="button"
+                                style=move || if is_vi() {
+                                    "background: none; border: none; color: var(--secondary); cursor: pointer; padding: 6px 12px; border-bottom: 2px solid var(--secondary);"
+                                } else {
+                                    "background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 6px 12px;"
+                                }
+                            >
+                                "Tiếng Việt"
+                            </button>
+                            <button
+                                on:click=move |_| {
+                                    lang.set(Language::En);
+                                    menu_open.set(false);
+                                }
+                                type="button"
+                                style=move || if is_en() {
+                                    "background: none; border: none; color: var(--secondary); cursor: pointer; padding: 6px 12px; border-bottom: 2px solid var(--secondary);"
+                                } else {
+                                    "background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 6px 12px;"
+                                }
+                            >
+                                "English"
+                            </button>
+                        </div>
+                    </li>
+
+                    <li style="margin-top: 24px; width: 100%;">
+                        <a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%; text-align: center; display: block; padding: 12px; font-size: 1rem;">
                             {move || t!(lang, "Shopee Store", "Cửa hàng Shopee")()}
                         </a>
                     </li>
