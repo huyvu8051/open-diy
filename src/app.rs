@@ -383,13 +383,13 @@ fn Navbar() -> impl IntoView {
                 "open-diy"
             </A>
             <ul class="nav-menu">
-                <li><A href="/" attr:class="nav-link">{t!(lang, "Home", "Trang chủ")}</A></li>
-                <li><A href="/shop" attr:class="nav-link">{t!(lang, "Shop", "Cửa hàng")}</A></li>
-                <li><A href="/about" attr:class="nav-link">{t!(lang, "About", "Giới thiệu")}</A></li>
+                <li><A href="/" attr:class="nav-link">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
+                <li><A href="/shop" attr:class="nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
+                <li><A href="/about" attr:class="nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
             </ul>
             <div class="nav-actions" style="display: flex; align-items: center; gap: 16px;">
                 <div style="display: flex; gap: 6px; font-size: 0.85rem; font-weight: 600;">
-                    <button 
+                    <button
                         on:click=toggle_vi
                         type="button"
                         style=move || if is_vi() {
@@ -401,7 +401,7 @@ fn Navbar() -> impl IntoView {
                         "VI"
                     </button>
                     <span style="color: var(--border-color);">"|"</span>
-                    <button 
+                    <button
                         on:click=toggle_en
                         type="button"
                         style=move || if is_en() {
@@ -414,7 +414,7 @@ fn Navbar() -> impl IntoView {
                     </button>
                 </div>
                 <a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                    {t!(lang, "Shopee Store", "Cửa hàng Shopee")}
+                    {move || t!(lang, "Shopee Store", "Cửa hàng Shopee")()}
                 </a>
             </div>
         </nav>
@@ -1705,10 +1705,10 @@ fn Footer() -> impl IntoView {
                 <div class="footer-col">
                     <h4>{t!(lang, "Quick Links", "Liên kết nhanh")}</h4>
                     <ul class="footer-links">
-                        <li><A href="/">{t!(lang, "Home", "Trang chủ")}</A></li>
+                        <li><A href="/">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
                         <li><A href="/shop">{t!(lang, "Catalog Shop", "Danh mục sản phẩm")}</A></li>
                         <li><A href="/about">{t!(lang, "Philosophy", "Triết lý")}</A></li>
-                        <li><a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer">{t!(lang, "Shopee Store", "Cửa hàng Shopee")}</a></li>
+                        <li><a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer">{move || t!(lang, "Shopee Store", "Cửa hàng Shopee")()}</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
