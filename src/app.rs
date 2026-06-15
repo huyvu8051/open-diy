@@ -28,6 +28,17 @@ pub struct LanguageContext {
     pub lang: RwSignal<Language>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Theme {
+    Light,
+    Dark,
+}
+
+#[derive(Clone, Copy)]
+pub struct ThemeContext {
+    pub theme: RwSignal<Theme>,
+}
+
 macro_rules! t {
     ($lang:expr, $en:expr, $vi:expr) => {
         move || match $lang.get() {
@@ -342,6 +353,13 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <AutoReload options=options.clone() />
                 <HydrationScripts options/>
                 <MetaTags/>
+                <script>
+                    "if (localStorage.getItem('theme') === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                        document.documentElement.classList.add('light');
+                    } else {
+                        document.documentElement.classList.remove('light');
+                    }"
+                </script>
             </head>
             <body>
                 <App/>
@@ -360,6 +378,60 @@ pub fn App() -> impl IntoView {
 
     let lang = RwSignal::new(Language::Vi); // Default to Vietnamese
     provide_context(LanguageContext { lang });
+
+    // Initialize theme signal (default to Dark to preserve existing aesthetics)
+    let theme = RwSignal::new(Theme::Dark);
+
+    // Hydrate theme from LocalStorage on the client side
+    #[cfg(feature = "hydrate")]
+    {
+        if let Some(window) = web_sys::window() {
+            if let Ok(Some(local_storage)) = window.local_storage() {
+                if let Ok(Some(theme_val)) = local_storage.get_item("theme") {
+                    if theme_val == "light" {
+                        theme.set(Theme::Light);
+                    }
+                } else {
+                    // Fallback to system preference if no localStorage value exists
+                    if let Ok(Some(media_query_list)) = window.match_media("(prefers-color-scheme: light)") {
+                        if media_query_list.matches() {
+                            theme.set(Theme::Light);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    provide_context(ThemeContext { theme });
+
+    // Reactively update the class on <html> and save to LocalStorage
+    Effect::new(move |_| {
+        #[cfg(feature = "hydrate")]
+        {
+            let current_theme = theme.get();
+            if let Some(window) = web_sys::window() {
+                if let Some(document) = window.document() {
+                    if let Some(html) = document.document_element() {
+                        match current_theme {
+                            Theme::Light => {
+                                let _ = html.class_list().add_1("light");
+                                if let Ok(Some(local_storage)) = window.local_storage() {
+                                    let _ = local_storage.set_item("theme", "light");
+                                }
+                            }
+                            Theme::Dark => {
+                                let _ = html.class_list().remove_1("light");
+                                if let Ok(Some(local_storage)) = window.local_storage() {
+                                    let _ = local_storage.set_item("theme", "dark");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
 
     view! {
         <Stylesheet id="leptos" href="/pkg/open-diy.css"/>
@@ -394,6 +466,8 @@ Navigation Component
 #[component]
 fn Navbar() -> impl IntoView {
     let lang = expect_context::<LanguageContext>().lang;
+    let theme_ctx = expect_context::<ThemeContext>();
+    let theme = theme_ctx.theme;
 
     let is_en = move || lang.get() == Language::En;
     let is_vi = move || lang.get() == Language::Vi;
@@ -401,18 +475,40 @@ fn Navbar() -> impl IntoView {
     let toggle_en = move |_| lang.set(Language::En);
     let toggle_vi = move |_| lang.set(Language::Vi);
 
+    // Toggle theme callback
+    let toggle_theme = move |_| {
+        theme.update(|t| {
+            *t = match t {
+                Theme::Light => Theme::Dark,
+                Theme::Dark => Theme::Light,
+            };
+        });
+    };
+
     view! {
         <nav class="navbar">
             <A href="/" attr:class="nav-brand">
                 <picture>
-                    <source srcset="/images/logo_dark.png" media="(prefers-color-scheme: dark)"/>
-                    <img
-                        src="/images/logo_light.png"
-                        alt="Open-DIY Logo"
-                        width="40"
-                        height="40"
-                        style="display: block; object-fit: contain; flex-shrink: 0;"
-                    />
+                    {move || match theme.get() {
+                        Theme::Light => view! {
+                            <img
+                                src="/images/logo_light.png"
+                                alt="Open-DIY Logo"
+                                width="40"
+                                height="40"
+                                style="display: block; object-fit: contain; flex-shrink: 0;"
+                            />
+                        }.into_any(),
+                        Theme::Dark => view! {
+                            <img
+                                src="/images/logo_dark.png"
+                                alt="Open-DIY Logo"
+                                width="40"
+                                height="40"
+                                style="display: block; object-fit: contain; flex-shrink: 0;"
+                            />
+                        }.into_any(),
+                    }}
                 </picture>
                 "open-diy"
             </A>
@@ -422,6 +518,35 @@ fn Navbar() -> impl IntoView {
                 <li><A href="/about" attr:class="nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
             </ul>
             <div class="nav-actions" style="display: flex; align-items: center; gap: 16px;">
+                // Theme Toggle Button
+                <button
+                    on:click=toggle_theme
+                    type="button"
+                    class="theme-toggle-btn"
+                    aria-label="Toggle Theme"
+                    style="background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; transition: var(--transition-fast);"
+                >
+                    {move || match theme.get() {
+                        Theme::Light => view! {
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        }.into_any(),
+                        Theme::Dark => view! {
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                        }.into_any()
+                    }}
+                </button>
                 <div style="display: flex; gap: 6px; font-size: 0.85rem; font-weight: 600;">
                     <button
                         on:click=toggle_vi
