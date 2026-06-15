@@ -2,7 +2,7 @@ use crate::seo::{
     faq_json_ld, organization_json_ld, product_json_ld, website_json_ld, JsonLd, SeoHead,
 };
 use leptos::prelude::*;
-use leptos_meta::{provide_meta_context, MetaTags, Script, Stylesheet, HashedStylesheet};
+use leptos_meta::{provide_meta_context, MetaTags, Script, HashedStylesheet};
 use leptos_router::{
     components::{Route, Router, Routes, A},
     hooks::use_params_map,
@@ -348,6 +348,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
                 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+                <HashedStylesheet id="leptos" options=options.clone() />
                 <AutoReload options=options.clone() />
                 <HydrationScripts options/>
                 <MetaTags/>
@@ -373,7 +374,7 @@ Main App Component
 #[component]
 pub fn App() -> impl IntoView {
     provide_meta_context();
-    let options = use_context::<LeptosOptions>();
+
 
 
     let lang = RwSignal::new(Language::Vi); // Default to Vietnamese
@@ -434,7 +435,7 @@ pub fn App() -> impl IntoView {
     });
 
     view! {
-        {options.map(|opt| view! { <HashedStylesheet id="leptos" options=opt/> })}
+
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
         <Script src="/js/audio.js" defer="true" />
