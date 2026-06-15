@@ -372,6 +372,8 @@ Main App Component
 #[component]
 pub fn App() -> impl IntoView {
     provide_meta_context();
+    let options = use_context::<LeptosOptions>().expect("LeptosOptions to be in context");
+
 
     let lang = RwSignal::new(Language::Vi); // Default to Vietnamese
     provide_context(LanguageContext { lang });
@@ -431,7 +433,7 @@ pub fn App() -> impl IntoView {
     });
 
     view! {
-        <HashedStylesheet id="leptos"/>
+        <HashedStylesheet id="leptos" options=options/>
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
         <Script src="/js/audio.js" defer="true" />
