@@ -84,10 +84,8 @@ novelty gift
 ```
 
 ## 🖼️ Ảnh listing
-
-1. **Hero:** Render studio — https://v3b.fal.media/files/b/0a9e5f48/03htpFTenjoLH9vmcKOot_lY4c5lB7.png
-2. **Lifestyle:** Ảnh thật với bút — `~/projects/Open-DIY/public/images/cheese_pen_holder_lifestyle.jpg`
-3. **Detail:** Ảnh close-up holes — `~/projects/Open-DIY/public/images/cheese_pen_holder_detail.jpg`
+**Supporting images:**
+- Render studio: https://v3b.fal.media/files/b/0a9e5f48/03htpFTenjoLH9vmcKOot_lY4c5lB7.png
 
 ## 📊 So sánh đối thủ
 
