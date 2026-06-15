@@ -1426,3 +1426,52 @@ input[type="range"]::-webkit-slider-thumb:hover {
     font-size: 1.35rem;
   }
 }
+
+/* ==========================================
+   AI Assistant Chat Window Styles
+   ========================================== */
+.ai-chat-window {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  width: 360px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+html.light .ai-chat-window {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+}
+
+@media (max-width: 768px) {
+  .ai-chat-window {
+    bottom: 90px;
+    right: 20px;
+    left: 20px;
+    width: calc(100% - 40px);
+    height: 480px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-chat-window {
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    width: 100%;
+    height: 75%;
+    border-radius: 24px 24px 0 0;
+    border-bottom: none;
+  }
+}
