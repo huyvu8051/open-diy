@@ -1308,8 +1308,38 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* ==========================================
    Responsive Navbar & Mobile Menu
    ========================================== */
+/* Theme Logo / Icon Toggle via CSS */
+.logo-light {
+  display: none !important;
+}
+.logo-dark {
+  display: block !important;
+}
+
+.sun-icon {
+  display: block !important;
+}
+.moon-icon {
+  display: none !important;
+}
+
+html.light {
+  .logo-light {
+    display: block !important;
+  }
+  .logo-dark {
+    display: none !important;
+  }
+  .sun-icon {
+    display: none !important;
+  }
+  .moon-icon {
+    display: block !important;
+  }
+}
+
 .desktop-only {
-  display: flex !important;
+  /* Let desktop elements keep their native layout styles (e.g. display: inline-flex for buttons) */
 }
 
 .burger-btn {

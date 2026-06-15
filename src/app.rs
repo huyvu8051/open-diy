@@ -492,28 +492,22 @@ fn Navbar() -> impl IntoView {
     view! {
         <nav class="navbar">
             <A href="/" attr:class="nav-brand">
-                <picture>
-                    {move || match theme.get() {
-                        Theme::Light => view! {
-                            <img
-                                src="/images/logo_light.png"
-                                alt="Open-DIY Logo"
-                                width="40"
-                                height="40"
-                                style="display: block; object-fit: contain; flex-shrink: 0;"
-                            />
-                        }.into_any(),
-                        Theme::Dark => view! {
-                            <img
-                                src="/images/logo_dark.png"
-                                alt="Open-DIY Logo"
-                                width="40"
-                                height="40"
-                                style="display: block; object-fit: contain; flex-shrink: 0;"
-                            />
-                        }.into_any(),
-                    }}
-                </picture>
+                <img
+                    src="/images/logo_light.png"
+                    alt="Open-DIY Logo"
+                    class="logo-light"
+                    width="40"
+                    height="40"
+                    style="display: block; object-fit: contain; flex-shrink: 0;"
+                />
+                <img
+                    src="/images/logo_dark.png"
+                    alt="Open-DIY Logo"
+                    class="logo-dark"
+                    width="40"
+                    height="40"
+                    style="display: block; object-fit: contain; flex-shrink: 0;"
+                />
                 "open-diy"
             </A>
             <ul class="nav-menu desktop-only">
@@ -530,26 +524,20 @@ fn Navbar() -> impl IntoView {
                     aria-label="Toggle Theme"
                     style="background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; transition: var(--transition-fast);"
                 >
-                    {move || match theme.get() {
-                        Theme::Light => view! {
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                            </svg>
-                        }.into_any(),
-                        Theme::Dark => view! {
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="5"></circle>
-                                <line x1="12" y1="1" x2="12" y2="3"></line>
-                                <line x1="12" y1="21" x2="12" y2="23"></line>
-                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                                <line x1="1" y1="12" x2="3" y2="12"></line>
-                                <line x1="21" y1="12" x2="23" y2="12"></line>
-                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                            </svg>
-                        }.into_any()
-                    }}
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
                 </button>
                 <div style="display: flex; gap: 6px; font-size: 0.85rem; font-weight: 600;">
                     <button
