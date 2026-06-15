@@ -2,7 +2,7 @@ use crate::seo::{
     faq_json_ld, organization_json_ld, product_json_ld, website_json_ld, JsonLd, SeoHead,
 };
 use leptos::prelude::*;
-use leptos_meta::{provide_meta_context, MetaTags, Script, Stylesheet};
+use leptos_meta::{provide_meta_context, MetaTags, Script, Stylesheet, HashedStylesheet};
 use leptos_router::{
     components::{Route, Router, Routes, A},
     hooks::use_params_map,
@@ -309,25 +309,24 @@ fn get_products() -> Vec<Product> {
             images: vec![
                 String::from("https://v3b.fal.media/files/b/0a9e5f48/03htpFTenjoLH9vmcKOot_lY4c5lB7.png"),
             ],
-            price: 14.9,
+            price: 149.0,
             desc_en: String::from("Swiss cheese inspired 3D printed desk organizer. PETG, ~97g, yellow novelty pen holder for clean desk setups."),
             desc_vi: String::from("Giá đựng bút hình khối phô mai Swiss, 3D in bằng PETG vàng đặc trưng. Thiết kế độc đáo, nhiều lỗ tiện lợi, phù hợp desk setup và quà tặng."),
-            detailed_desc_en: String::from("ABOUT THE PRODUCT:\nInspired by classic Swiss cheese cubes, this pen holder brings playful personality to any desk. Each piece is 3D printed in-house with PETG for durability and a premium matte-yellow finish.\n\nDETAILS:\n- Material: PETG 1.75mm\n- Weight: ~97g\n- Print time: ~4.7h per unit\n- Layer height: 0.2mm\n- Infill: 15%\n- Nozzle: 0.4mm\n- Build plate: Textured PEI\n\nPERFECT FOR:\nDesk setup lovers, keyboard enthusiasts, and anyone looking for a functional conversation piece."),
-            detailed_desc_vi: String::from("GIỚI THIỆU SẢN PHẨM:\nLấy cảm hứng từ khối phô mai Swiss trong phim hoạt hình, Cheese Cube PenHolder là món phụ kiện bàn làm việc độc đáo, vừa tiện dụng vừa nói lên cá tính người dùng. Sản phẩm được in nội bộ bằng PETG, bền màu và chịu nhiệt tốt.\n\nTHÔNG SỐ CHI TIẾT:\n- Chất liệu: PETG 1.75mm\n- Trọng lượng: ~97g\n- Thời gian in: ~4.7h/sản phẩm\n- Độ dày lớp: 0.2mm\n- Độ đặc: 15%\n- Đầu phun: 0.4mm\n- Bàn in: Textured PEI\n\nĐỐI TƯỢNG PHÙ HỢP:\nFan desk setup, dân phím cơ, designer coder, hoặc đơn giản là ai muốn bàn làm việc thêm chút cá tính."),
+            detailed_desc_en: String::from("ABOUT THE PRODUCT:\nAdd a playful Swiss cheese twist to your workspace! Made of premium, durable yellow PETG, this ~97g pen holder keeps your pens and tools neatly organized. Perfect for desk setup lovers and keyboard enthusiasts seeking a unique, conversation-starting design.\n\n- Concept: Swiss cheese cube novelty design\n- Material: Durable yellow PETG\n- Weight: ~97g with a stable base\n- Target: Desk setup and keyboard enthusiasts\n- USPs: Distinct multi-hole design organizes pens & tools stylishly"),
+            detailed_desc_vi: String::from("GIỚI THIỆU SẢN PHẨM:\nThêm chút cá tính cho góc làm việc với chiếc giá cắm bút hình khối phô mai Swiss độc đáo! Sản phẩm được in từ PETG bền bỉ với màu vàng bắt mắt và trọng lượng ~97g đầm chắc. Đây là lựa chọn hoàn hảo cho dân chơi bàn phím cơ và desk setup muốn làm mới không gian làm việc.\n\n- Concept: Khối phô mai Swiss độc đáo và sáng tạo\n- Chất liệu: Nhựa PETG vàng cao cấp, bền bỉ\n- Trọng lượng: ~97g đầm chắc, chống đổ\n- Đối tượng: Người đam mê desk setup & bàn phím cơ\n- Điểm nổi bật (USP): Nhiều lỗ cắm đa năng cho bút và dụng cụ học tập"),
+
             shopee_url: String::from("https://shopee.vn/opendiy"),
             github_url: None,
             specs_en: vec![
                 String::from("Swiss cheese cube novelty design"),
                 String::from("PETG 1.75mm, yellow premium finish"),
                 String::from("~97g, stable weighted base"),
-                String::from("0.2mm layer, 2 walls, 15% infill"),
                 String::from("Made in Vietnam by Open DIY"),
             ],
             specs_vi: vec![
                 String::from("Concept khối phô mai Swiss độc đáo"),
                 String::from("PETG 1.75mm, hoàn thiện vàng đặc trưng"),
                 String::from("~97g, đế chắc không bị đổ khi cắm bút"),
-                String::from("In 0.2mm, 2 tường, độ đặc 15%"),
                 String::from("Sản xuất tại Việt Nam bởi Open DIY"),
             ],
         },
@@ -432,7 +431,7 @@ pub fn App() -> impl IntoView {
     });
 
     view! {
-        <Stylesheet id="leptos" href="/pkg/open-diy.css"/>
+        <HashedStylesheet id="leptos" href="/pkg/open-diy.css"/>
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
         <Script src="/js/audio.js" defer="true" />
