@@ -338,6 +338,7 @@ Shell (Server Side Entry)
 ========================================== */
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
+    provide_context(options.clone());
     view! {
         <!DOCTYPE html>
         <html lang="en">
@@ -372,7 +373,7 @@ Main App Component
 #[component]
 pub fn App() -> impl IntoView {
     provide_meta_context();
-    let options = use_context::<LeptosOptions>().expect("LeptosOptions to be in context");
+    let options = use_context::<LeptosOptions>();
 
 
     let lang = RwSignal::new(Language::Vi); // Default to Vietnamese
@@ -433,7 +434,7 @@ pub fn App() -> impl IntoView {
     });
 
     view! {
-        <HashedStylesheet id="leptos" options=options/>
+        {options.map(|opt| view! { <HashedStylesheet id="leptos" options=opt/> })}
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
         <Script src="/js/audio.js" defer="true" />
