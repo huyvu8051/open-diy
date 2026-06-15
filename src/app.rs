@@ -509,7 +509,6 @@ fn Navbar() -> impl IntoView {
                     height="40"
                     style="display: block; object-fit: contain; flex-shrink: 0;"
                 />
-                "open-diy"
             </A>
             <ul class="nav-menu desktop-only">
                 <li><A href="/" attr:class="nav-link">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
