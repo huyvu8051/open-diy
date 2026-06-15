@@ -469,11 +469,15 @@ fn Navbar() -> impl IntoView {
     let theme_ctx = expect_context::<ThemeContext>();
     let theme = theme_ctx.theme;
 
+    let menu_open = RwSignal::new(false);
+
     let is_en = move || lang.get() == Language::En;
     let is_vi = move || lang.get() == Language::Vi;
 
     let toggle_en = move |_| lang.set(Language::En);
     let toggle_vi = move |_| lang.set(Language::Vi);
+
+    let toggle_menu = move |_| menu_open.update(|v| *v = !*v);
 
     // Toggle theme callback
     let toggle_theme = move |_| {
@@ -512,7 +516,7 @@ fn Navbar() -> impl IntoView {
                 </picture>
                 "open-diy"
             </A>
-            <ul class="nav-menu">
+            <ul class="nav-menu desktop-only">
                 <li><A href="/" attr:class="nav-link">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
                 <li><A href="/shop" attr:class="nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
                 <li><A href="/about" attr:class="nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
@@ -572,9 +576,37 @@ fn Navbar() -> impl IntoView {
                         "EN"
                     </button>
                 </div>
-                <a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                <a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm desktop-only">
                     {move || t!(lang, "Shopee Store", "Cửa hàng Shopee")()}
                 </a>
+
+                // Burger Button (Mobile only)
+                <button
+                    on:click=toggle_menu
+                    type="button"
+                    class="burger-btn"
+                    aria-label="Toggle Menu"
+                >
+                    <div class=move || if menu_open.get() { "burger-icon open" } else { "burger-icon" }>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+            </div>
+
+            // Mobile Menu Overlay
+            <div class=move || if menu_open.get() { "mobile-menu open" } else { "mobile-menu" }>
+                <ul class="mobile-nav-links">
+                    <li><A on:click=toggle_menu href="/" attr:class="mobile-nav-link">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
+                    <li><A on:click=toggle_menu href="/shop" attr:class="mobile-nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
+                    <li><A on:click=toggle_menu href="/about" attr:class="mobile-nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
+                    <li style="margin-top: 20px; width: 100%;">
+                        <a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="width: 100%; text-align: center; display: block; padding: 12px;">
+                            {move || t!(lang, "Shopee Store", "Cửa hàng Shopee")()}
+                        </a>
+                    </li>
+                </ul>
             </div>
         </nav>
     }
