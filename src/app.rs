@@ -308,8 +308,6 @@ fn get_products() -> Vec<Product> {
             image: String::from("https://v3b.fal.media/files/b/0a9e5f48/03htpFTenjoLH9vmcKOot_lY4c5lB7.png"),
             images: vec![
                 String::from("https://v3b.fal.media/files/b/0a9e5f48/03htpFTenjoLH9vmcKOot_lY4c5lB7.png"),
-                String::from("/images/cheese_pen_holder_lifestyle.jpg"),
-                String::from("/images/cheese_pen_holder_detail.jpg"),
             ],
             price: 14.9,
             desc_en: String::from("Swiss cheese inspired 3D printed desk organizer. PETG, ~97g, yellow novelty pen holder for clean desk setups."),
