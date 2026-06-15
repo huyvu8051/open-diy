@@ -39,16 +39,3 @@ jobs:
             ${{ steps.meta.outputs.image }}
             ghcr.io/huyvu8051/open-diy:stable
             ghcr.io/huyvu8051/open-diy:latest
-
-      - name: Trigger ArgoCD webhook
-        if: always()
-        run: |
-          WEBHOOK="${ARGOCD_WEBHOOK:-}"
-          if [ -z "$WEBHOOK" ]; then
-            echo "ARGOCD_WEBHOOK is not set. Skipping ArgoCD sync."
-            exit 0
-          fi
-          echo "Triggering ArgoCD webhook..."
-          curl -sS -X POST "$WEBHOOK" -H "Content-Type: application/json" -d '{}'
-        env:
-          ARGOCD_WEBHOOK: ${{ secrets.ARGOCD_WEBHOOK }}
