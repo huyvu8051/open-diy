@@ -431,7 +431,7 @@ pub fn App() -> impl IntoView {
     });
 
     view! {
-        <HashedStylesheet id="leptos" href="/pkg/open-diy.css"/>
+        <HashedStylesheet id="leptos"/>
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
         <Script src="/js/audio.js" defer="true" />
