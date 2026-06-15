@@ -45,6 +45,8 @@ COPY --from=builder /app/target/site /app/site
 ENV LEPTOS_SITE_ROOT=/app/site
 ENV LEPTOS_SITE_ADDR=0.0.0.0:3000
 ENV LEPTOS_ENV=PROD
+ENV LEPTOS_HASH_FILES=true
+
 
 # Expose port
 EXPOSE 3000
