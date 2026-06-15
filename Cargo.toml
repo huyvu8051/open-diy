@@ -80,7 +80,8 @@ browserquery = "defaults"
 env = "DEV"
 
 # Generate hashes for compiled JS/WASM/CSS files to bust cache on deployment
-hash_files = true
+hash-files = true
+
 
 
 # The features to use when compiling the bin target
