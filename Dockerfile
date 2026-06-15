@@ -38,6 +38,8 @@ WORKDIR /app
 # Copy the server binary and site assets from the builder stage
 COPY --from=builder /app/target/release/open-diy /app/
 COPY --from=builder /app/target/release/hash.txt /app/
+COPY --from=builder /app/target/release/hash.txt /app/site/hash.txt
+
 COPY --from=builder /app/target/site /app/site
 
 
