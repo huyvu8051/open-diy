@@ -288,6 +288,40 @@ fn get_products() -> Vec<Product> {
                 String::from("Mỗi sản phẩm có vân gỗ tự nhiên độc nhất vô nhị"),
             ],
         },
+        Product {
+            id: String::from("cheese-pen-holder"),
+            name_en: String::from("Cheese Cube Pen Holder"),
+            name_vi: String::from("Giá Đựng Bút Phô Mai Swiss 3D In"),
+            tag_en: String::from("Desk Accessory"),
+            tag_vi: String::from("Phụ kiện bàn"),
+            image: String::from("https://v3b.fal.media/files/b/0a9e5f48/03htpFTenjoLH9vmcKOot_lY4c5lB7.png"),
+            images: vec![
+                String::from("https://v3b.fal.media/files/b/0a9e5f48/03htpFTenjoLH9vmcKOot_lY4c5lB7.png"),
+                String::from("/images/cheese_pen_holder_lifestyle.jpg"),
+                String::from("/images/cheese_pen_holder_detail.jpg"),
+            ],
+            price: 14.9,
+            desc_en: String::from("Swiss cheese inspired 3D printed desk organizer. PETG, ~97g, yellow novelty pen holder for clean desk setups."),
+            desc_vi: String::from("Giá đựng bút hình khối phô mai Swiss, 3D in bằng PETG vàng đặc trưng. Thiết kế độc đáo, nhiều lỗ tiện lợi, phù hợp desk setup và quà tặng."),
+            detailed_desc_en: String::from("ABOUT THE PRODUCT:\nInspired by classic Swiss cheese cubes, this pen holder brings playful personality to any desk. Each piece is 3D printed in-house with PETG for durability and a premium matte-yellow finish.\n\nDETAILS:\n- Material: PETG 1.75mm\n- Weight: ~97g\n- Print time: ~4.7h per unit\n- Layer height: 0.2mm\n- Infill: 15%\n- Nozzle: 0.4mm\n- Build plate: Textured PEI\n\nPERFECT FOR:\nDesk setup lovers, keyboard enthusiasts, and anyone looking for a functional conversation piece."),
+            detailed_desc_vi: String::from("GIỚI THIỆU SẢN PHẨM:\nLấy cảm hứng từ khối phô mai Swiss trong phim hoạt hình, Cheese Cube PenHolder là món phụ kiện bàn làm việc độc đáo, vừa tiện dụng vừa nói lên cá tính người dùng. Sản phẩm được in nội bộ bằng PETG, bền màu và chịu nhiệt tốt.\n\nTHÔNG SỐ CHI TIẾT:\n- Chất liệu: PETG 1.75mm\n- Trọng lượng: ~97g\n- Thời gian in: ~4.7h/sản phẩm\n- Độ dày lớp: 0.2mm\n- Độ đặc: 15%\n- Đầu phun: 0.4mm\n- Bàn in: Textured PEI\n\nĐỐI TƯỢNG PHÙ HỢP:\nFan desk setup, dân phím cơ, designer coder, hoặc đơn giản là ai muốn bàn làm việc thêm chút cá tính."),
+            shopee_url: String::from("https://shopee.vn/opendiy"),
+            github_url: None,
+            specs_en: vec![
+                String::from("Swiss cheese cube novelty design"),
+                String::from("PETG 1.75mm, yellow premium finish"),
+                String::from("~97g, stable weighted base"),
+                String::from("0.2mm layer, 2 walls, 15% infill"),
+                String::from("Made in Vietnam by Open DIY"),
+            ],
+            specs_vi: vec![
+                String::from("Concept khối phô mai Swiss độc đáo"),
+                String::from("PETG 1.75mm, hoàn thiện vàng đặc trưng"),
+                String::from("~97g, đế chắc không bị đổ khi cắm bút"),
+                String::from("In 0.2mm, 2 tường, độ đặc 15%"),
+                String::from("Sản xuất tại Việt Nam bởi Open DIY"),
+            ],
+        },
     ]
 }
 
