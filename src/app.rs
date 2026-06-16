@@ -496,17 +496,17 @@ fn Navbar() -> impl IntoView {
                     src="/images/logo_light.png"
                     alt="Open-DIY Logo"
                     class="logo-light"
-                    width="48"
-                    height="48"
-                    style="display: block; object-fit: contain; flex-shrink: 0;"
+                    width="64"
+                    height="64"
+                    style="display: block; object-fit: contain; flex-shrink: 0; height: 100%; max-height: 64px; width: auto; padding: 4px 0;"
                 />
                 <img
                     src="/images/logo_dark.png"
                     alt="Open-DIY Logo"
                     class="logo-dark"
-                    width="48"
-                    height="48"
-                    style="display: block; object-fit: contain; flex-shrink: 0;"
+                    width="64"
+                    height="64"
+                    style="display: block; object-fit: contain; flex-shrink: 0; height: 100%; max-height: 64px; width: auto; padding: 4px 0;"
                 />
             </A>
             <ul class="nav-menu desktop-only">
