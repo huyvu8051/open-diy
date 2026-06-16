@@ -498,7 +498,6 @@ fn Navbar() -> impl IntoView {
                     class="logo-light"
                     width="80"
                     height="80"
-                    style="display: block; object-fit: contain; flex-shrink: 0; height: 100%; width: auto; padding: 0;"
                 />
                 <img
                     src="/images/logo_dark.png"
@@ -506,7 +505,6 @@ fn Navbar() -> impl IntoView {
                     class="logo-dark"
                     width="80"
                     height="80"
-                    style="display: block; object-fit: contain; flex-shrink: 0; height: 100%; width: auto; padding: 0;"
                 />
             </A>
             <ul class="nav-menu desktop-only">

@@ -167,6 +167,7 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
   letter-spacing: -0.03em;
   transition: color 0.3s;
+  height: 100%;
 }
 
 .nav-brand span {
@@ -1308,7 +1309,20 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* ==========================================
    Responsive Navbar & Mobile Menu
    ========================================== */
-/* Theme Logo / Icon Toggle via CSS */
+.logo-light,
+.logo-dark {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  padding: 10px 0;
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    padding: 6px 0;
+  }
+}
+
 .logo-light {
   display: none !important;
 }
