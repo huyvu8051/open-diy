@@ -496,15 +496,11 @@ fn Navbar() -> impl IntoView {
                     src="/images/logo_light.png"
                     alt="Open-DIY Logo"
                     class="logo-light"
-                    width="80"
-                    height="80"
                 />
                 <img
                     src="/images/logo_dark.png"
                     alt="Open-DIY Logo"
                     class="logo-dark"
-                    width="80"
-                    height="80"
                 />
             </A>
             <ul class="nav-menu desktop-only">
@@ -1769,7 +1765,7 @@ fn AiAssistant() -> impl IntoView {
                     <div style="padding: 16px; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2)); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; text-align: left;">
                         <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e;"></span>
                         <div>
-                            <h4 style="margin: 0; font-size: 0.95rem; color: #fff; font-weight: 600;">"Trợ lý AI Open-DIY"</h4>
+                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 600;">"Trợ lý AI Open-DIY"</h4>
                             <span style="font-size: 0.72rem; color: var(--text-muted);">"CSKH Hỗ trợ 24/7"</span>
                         </div>
                     </div>
