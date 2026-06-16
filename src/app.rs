@@ -496,16 +496,16 @@ fn Navbar() -> impl IntoView {
                     src="/images/logo_light.png"
                     alt="Open-DIY Logo"
                     class="logo-light"
-                    width="40"
-                    height="40"
+                    width="48"
+                    height="48"
                     style="display: block; object-fit: contain; flex-shrink: 0;"
                 />
                 <img
                     src="/images/logo_dark.png"
                     alt="Open-DIY Logo"
                     class="logo-dark"
-                    width="40"
-                    height="40"
+                    width="48"
+                    height="48"
                     style="display: block; object-fit: contain; flex-shrink: 0;"
                 />
             </A>
