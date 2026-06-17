@@ -357,6 +357,34 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                         document.documentElement.classList.remove('light');
                     }"
                 </script>
+                <script type="module">
+                    r#"
+                    import { WebTracerProvider, SimpleSpanProcessor } from 'https://esm.sh/@opentelemetry/sdk-trace-web';
+                    import { OTLPTraceExporter } from 'https://esm.sh/@opentelemetry/exporter-trace-otlp-http';
+                    import { Resource } from 'https://esm.sh/@opentelemetry/resources';
+                    import { registerInstrumentations } from 'https://esm.sh/@opentelemetry/instrumentation';
+                    import { DocumentLoadInstrumentation } from 'https://esm.sh/@opentelemetry/instrumentation-document-load';
+
+                    const provider = new WebTracerProvider({
+                      resource: new Resource({
+                        'service.name': 'open-diy-web',
+                      }),
+                    });
+
+                    const exporter = new OTLPTraceExporter({
+                      url: 'https://otel.opendiy.vn/v1/traces',
+                    });
+
+                    provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
+                    provider.register();
+
+                    registerInstrumentations({
+                      instrumentations: [
+                        new DocumentLoadInstrumentation(),
+                      ],
+                    });
+                    "#
+                </script>
             </head>
             <body>
                 <App/>
