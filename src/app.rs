@@ -357,59 +357,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                         document.documentElement.classList.remove('light');
                     }"
                 </script>
-                <script type="module">
-                    r#"
-                    import { WebTracerProvider, SimpleSpanProcessor } from 'https://esm.sh/@opentelemetry/sdk-trace-web';
-                    import { OTLPTraceExporter } from 'https://esm.sh/@opentelemetry/exporter-trace-otlp-http';
-                    import { Resource } from 'https://esm.sh/@opentelemetry/resources';
-                    import { registerInstrumentations } from 'https://esm.sh/@opentelemetry/instrumentation';
-                    import { DocumentLoadInstrumentation } from 'https://esm.sh/@opentelemetry/instrumentation-document-load';
-                    import { FetchInstrumentation } from 'https://esm.sh/@opentelemetry/instrumentation-fetch';
-                    import { UserInteractionInstrumentation } from 'https://esm.sh/@opentelemetry/instrumentation-user-interaction';
-                    import { trace } from 'https://esm.sh/@opentelemetry/api';
-
-                    const provider = new WebTracerProvider({
-                      resource: new Resource({
-                        'service.name': 'open-diy-web',
-                      }),
-                    });
-
-                    const exporter = new OTLPTraceExporter({
-                      url: 'https://otel.opendiy.vn/v1/traces',
-                    });
-
-                    provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
-                    provider.register();
-
-                    registerInstrumentations({
-                      instrumentations: [
-                        new DocumentLoadInstrumentation(),
-                        new FetchInstrumentation(),
-                        new UserInteractionInstrumentation(),
-                      ],
-                    });
-
-                    window.otelHelper = {
-                      triggerCustomSpan: (spanName) => {
-                        const tracer = trace.getTracer('open-diy-manual');
-                        const span = tracer.startSpan(spanName);
-                        span.setAttribute('test.attribute', 'manual-trigger');
-                        setTimeout(() => {
-                          span.end();
-                          console.log('Custom span ended:', spanName);
-                        }, 200);
-                      },
-                      triggerException: (spanName, errMsg) => {
-                        const tracer = trace.getTracer('open-diy-manual');
-                        const span = tracer.startSpan(spanName);
-                        span.recordException(new Error(errMsg));
-                        span.setStatus({ code: 2, message: errMsg });
-                        span.end();
-                        console.log('Exception span ended:', spanName);
-                      }
-                    };
-                    "#
-                </script>
+                <script src="/js/otel-sdk.min.js" defer="true" />
             </head>
             <body>
                 <App/>
@@ -2017,38 +1965,30 @@ fn Footer() -> impl IntoView {
 fn OtelTestPage() -> impl IntoView {
     let lang = expect_context::<LanguageContext>().lang;
 
-    // Actions triggering browser JS / OTel SDK helper methods
+    // Actions triggering browser JS / OTel SDK helper methods using wasm_bindgen js_sys under hydrate
     let trigger_custom_span = move |_| {
         #[cfg(feature = "hydrate")]
         {
-            if let Some(window) = web_sys::window() {
-                if let Ok(Some(otel_helper)) = js_sys::Reflect::get(&window, &wasm_bindgen::JsValue::from_str("otelHelper")) {
-                    if let Ok(func) = js_sys::Reflect::get(&otel_helper, &wasm_bindgen::JsValue::from_str("triggerCustomSpan")) {
-                        if let Some(func_cast) = func.dyn_ref::<js_sys::Function>() {
-                            let _ = func_cast.call1(&wasm_bindgen::JsValue::NULL, &wasm_bindgen::JsValue::from_str("manual_otel_test_span"));
-                        }
-                    }
-                }
+            use wasm_bindgen::prelude::*;
+            #[wasm_bindgen]
+            extern "C" {
+                #[wasm_bindgen(js_namespace = ["window", "otelHelper"], js_name = triggerCustomSpan)]
+                fn trigger_custom_span_js(span_name: &str);
             }
+            trigger_custom_span_js("manual_otel_test_span");
         }
     };
 
     let trigger_exception = move |_| {
         #[cfg(feature = "hydrate")]
         {
-            if let Some(window) = web_sys::window() {
-                if let Ok(Some(otel_helper)) = js_sys::Reflect::get(&window, &wasm_bindgen::JsValue::from_str("otelHelper")) {
-                    if let Ok(func) = js_sys::Reflect::get(&otel_helper, &wasm_bindgen::JsValue::from_str("triggerException")) {
-                        if let Some(func_cast) = func.dyn_ref::<js_sys::Function>() {
-                            let _ = func_cast.call2(
-                                &wasm_bindgen::JsValue::NULL,
-                                &wasm_bindgen::JsValue::from_str("manual_error_span"),
-                                &wasm_bindgen::JsValue::from_str("Simulated exception error from test page")
-                            );
-                        }
-                    }
-                }
+            use wasm_bindgen::prelude::*;
+            #[wasm_bindgen]
+            extern "C" {
+                #[wasm_bindgen(js_namespace = ["window", "otelHelper"], js_name = triggerException)]
+                fn trigger_exception_js(span_name: &str, err_msg: &str);
             }
+            trigger_exception_js("manual_error_span", "Simulated exception error from test page");
         }
     };
 
@@ -2060,6 +2000,7 @@ fn OtelTestPage() -> impl IntoView {
             }
         }
     };
+
 
     view! {
         <div class="otel-test-container" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif;">
