@@ -1,8 +1,59 @@
 #![recursion_limit = "512"]
 
+#[cfg(feature = "trailing_telemetry")]
+fn init_tracing() {
+    use opentelemetry::global;
+    use opentelemetry::KeyValue;
+    use opentelemetry_otlp::{SpanExporter, WithExportConfig};
+    use opentelemetry_sdk::trace::SdkTracerProvider;
+    use opentelemetry_sdk::Resource;
+    use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+    let filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| "open_diy=debug,info,axum_tracing_opentelemetry=error".into());
+
+    let fmt_layer = tracing_subscriber::fmt::layer();
+
+    if let Ok(otlp_endpoint) = std::env::var("OTEL_EXPORTER_OTLP_ENDPOINT") {
+        let exporter = SpanExporter::builder()
+            .with_http()
+            .with_endpoint(otlp_endpoint)
+            .build()
+            .expect("Failed to create OTLP exporter");
+
+        let provider = SdkTracerProvider::builder()
+            .with_batch_exporter(exporter)
+            .with_resource(
+                Resource::builder_empty()
+                    .with_attributes(vec![KeyValue::new("service.name", "open-diy")])
+                    .build()
+            )
+            .build();
+
+        global::set_tracer_provider(provider.clone());
+        let tracer = global::tracer("open-diy");
+
+        let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(fmt_layer)
+            .with(telemetry)
+            .init();
+    } else {
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(fmt_layer)
+            .init();
+    }
+}
+
 #[cfg(feature = "ssr")]
 #[tokio::main]
 async fn main() {
+    #[cfg(feature = "trailing_telemetry")]
+    init_tracing();
+
     use axum::{http::header, response::IntoResponse, routing::get, Router};
     use leptos::logging::log;
     use leptos::prelude::*;
@@ -37,8 +88,12 @@ async fn main() {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())
         })
-        .fallback(leptos_axum::file_and_error_handler(shell))
-        .with_state(leptos_options);
+        .fallback(leptos_axum::file_and_error_handler(shell));
+
+    #[cfg(feature = "trailing_telemetry")]
+    let app = app.layer(axum_tracing_opentelemetry::middleware::OtelAxumLayer::default());
+
+    let app = app.with_state(leptos_options);
 
     // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
