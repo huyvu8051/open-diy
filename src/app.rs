@@ -1996,7 +1996,7 @@ fn OtelTestPage() -> impl IntoView {
         #[cfg(feature = "hydrate")]
         {
             if let Some(window) = web_sys::window() {
-                let _ = window.fetch_with_str("https://httpbin.org/delay/1");
+                let _ = window.fetch_with_str("/api/otel-test");
             }
         }
     };
@@ -2085,8 +2085,8 @@ fn OtelTestPage() -> impl IntoView {
                     <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px;">
                         {t!(
                             lang,
-                            "Triggers an HTTP GET request using fetch() to external API. The FetchInstrumentation should intercept this and generate a tracer span for this HTTP request.",
-                            "Kích hoạt một yêu cầu HTTP GET bằng fetch() tới API bên ngoài. FetchInstrumentation sẽ bắt sự kiện này và tạo span cho yêu cầu HTTP."
+                            "Triggers an HTTP GET request using fetch() to backend API (/api/otel-test). The FetchInstrumentation should intercept this and generate a tracer span for this HTTP request.",
+                            "Kích hoạt một yêu cầu HTTP GET bằng fetch() tới API hệ thống (/api/otel-test). FetchInstrumentation sẽ bắt sự kiện này và tạo span cho yêu cầu HTTP."
                         )}
                     </p>
                     <button 

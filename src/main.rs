@@ -75,6 +75,13 @@ async fn main() {
         )
     }
 
+    async fn otel_test_handler() -> impl IntoResponse {
+        (
+            [(header::CONTENT_TYPE, "application/json; charset=utf-8")],
+            r#"{"status":"ok","message":"OpenTelemetry test request successful"}"#,
+        )
+    }
+
     let conf = get_configuration(None).unwrap();
     let addr = conf.leptos_options.site_addr;
     let leptos_options = conf.leptos_options;
@@ -84,6 +91,7 @@ async fn main() {
     let app = Router::new()
         .route("/robots.txt", get(robots_txt_handler))
         .route("/sitemap.xml", get(sitemap_xml_handler))
+        .route("/api/otel-test", get(otel_test_handler))
         .leptos_routes(&leptos_options, routes, {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())
