@@ -364,6 +364,9 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                     import { Resource } from 'https://esm.sh/@opentelemetry/resources';
                     import { registerInstrumentations } from 'https://esm.sh/@opentelemetry/instrumentation';
                     import { DocumentLoadInstrumentation } from 'https://esm.sh/@opentelemetry/instrumentation-document-load';
+                    import { FetchInstrumentation } from 'https://esm.sh/@opentelemetry/instrumentation-fetch';
+                    import { UserInteractionInstrumentation } from 'https://esm.sh/@opentelemetry/instrumentation-user-interaction';
+                    import { trace } from 'https://esm.sh/@opentelemetry/api';
 
                     const provider = new WebTracerProvider({
                       resource: new Resource({
@@ -381,8 +384,30 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                     registerInstrumentations({
                       instrumentations: [
                         new DocumentLoadInstrumentation(),
+                        new FetchInstrumentation(),
+                        new UserInteractionInstrumentation(),
                       ],
                     });
+
+                    window.otelHelper = {
+                      triggerCustomSpan: (spanName) => {
+                        const tracer = trace.getTracer('open-diy-manual');
+                        const span = tracer.startSpan(spanName);
+                        span.setAttribute('test.attribute', 'manual-trigger');
+                        setTimeout(() => {
+                          span.end();
+                          console.log('Custom span ended:', spanName);
+                        }, 200);
+                      },
+                      triggerException: (spanName, errMsg) => {
+                        const tracer = trace.getTracer('open-diy-manual');
+                        const span = tracer.startSpan(spanName);
+                        span.recordException(new Error(errMsg));
+                        span.setStatus({ code: 2, message: errMsg });
+                        span.end();
+                        console.log('Exception span ended:', spanName);
+                      }
+                    };
                     "#
                 </script>
             </head>
@@ -476,6 +501,7 @@ pub fn App() -> impl IntoView {
                         <Route path=StaticSegment("shop") view=CatalogPage/>
                         <Route path=(StaticSegment("product"), ParamSegment("id")) view=ProductDetailPage/>
                         <Route path=StaticSegment("about") view=AboutPage/>
+                        <Route path=StaticSegment("otel-test") view=OtelTestPage/>
                     </Routes>
                 </main>
                 <Footer/>
@@ -1986,3 +2012,152 @@ fn Footer() -> impl IntoView {
         </footer>
     }
 }
+
+#[component]
+fn OtelTestPage() -> impl IntoView {
+    let lang = expect_context::<LanguageContext>().lang;
+
+    // Actions triggering browser JS / OTel SDK helper methods
+    let trigger_custom_span = move |_| {
+        #[cfg(feature = "hydrate")]
+        {
+            if let Some(window) = web_sys::window() {
+                if let Ok(Some(otel_helper)) = js_sys::Reflect::get(&window, &wasm_bindgen::JsValue::from_str("otelHelper")) {
+                    if let Ok(func) = js_sys::Reflect::get(&otel_helper, &wasm_bindgen::JsValue::from_str("triggerCustomSpan")) {
+                        if let Some(func_cast) = func.dyn_ref::<js_sys::Function>() {
+                            let _ = func_cast.call1(&wasm_bindgen::JsValue::NULL, &wasm_bindgen::JsValue::from_str("manual_otel_test_span"));
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    let trigger_exception = move |_| {
+        #[cfg(feature = "hydrate")]
+        {
+            if let Some(window) = web_sys::window() {
+                if let Ok(Some(otel_helper)) = js_sys::Reflect::get(&window, &wasm_bindgen::JsValue::from_str("otelHelper")) {
+                    if let Ok(func) = js_sys::Reflect::get(&otel_helper, &wasm_bindgen::JsValue::from_str("triggerException")) {
+                        if let Some(func_cast) = func.dyn_ref::<js_sys::Function>() {
+                            let _ = func_cast.call2(
+                                &wasm_bindgen::JsValue::NULL,
+                                &wasm_bindgen::JsValue::from_str("manual_error_span"),
+                                &wasm_bindgen::JsValue::from_str("Simulated exception error from test page")
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    let trigger_fetch = move |_| {
+        #[cfg(feature = "hydrate")]
+        {
+            if let Some(window) = web_sys::window() {
+                let _ = window.fetch_with_str("https://httpbin.org/delay/1");
+            }
+        }
+    };
+
+    view! {
+        <div class="otel-test-container" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif;">
+            <h1 class="gradient-text" style="font-size: 2.5rem; margin-bottom: 20px;">
+                {t!(lang, "OpenTelemetry Web SDK Test Suite", "Bộ Thử Nghiệm OpenTelemetry Web SDK")}
+            </h1>
+            
+            <p style="margin-bottom: 30px; font-size: 1.1rem; line-height: 1.6; color: var(--text);">
+                {t!(
+                    lang,
+                    "Use this page to manually trigger and test OTel Web SDK features. All events, spans, and traces generated here are automatically captured and pushed to the Tempo gateway at otel.opendiy.vn.",
+                    "Sử dụng trang này để kích hoạt và thử nghiệm các tính năng của OTel Web SDK. Tất cả các sự kiện, span và trace được tạo ở đây sẽ tự động được thu thập và gửi đến cổng Tempo tại otel.opendiy.vn."
+                )}
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                // 1. Document Load Test Card
+                <div style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #10B981;"></span>
+                        {t!(lang, "Document Load & Performance Metrics", "Tải trang & Chỉ số Hiệu năng")}
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+                        {t!(
+                            lang,
+                            "Traces are automatically generated when this page finishes loading. It records browser performance timings (DNS lookup, TCP connect, DOM content loaded, etc.).",
+                            "Trace được tạo tự động khi trang này tải xong. Nó ghi lại thời gian hiệu năng của trình duyệt (tra cứu DNS, kết nối TCP, DOM content loaded, v.v.)."
+                        )}
+                    </p>
+                </div>
+
+                // 2. Custom Tracer Span Card
+                <div style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #3B82F6;"></span>
+                        {t!(lang, "Custom Span Generation", "Tạo Custom Span")}
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px;">
+                        {t!(
+                            lang,
+                            "Manually start and end a tracer span inside the browser environment. This tests client-side manual instrumentation using the web SDK.",
+                            "Tự động tạo và kết thúc một span trong môi trường trình duyệt. Thử nghiệm việc định cấu hình trace thủ công phía client bằng SDK web."
+                        )}
+                    </p>
+                    <button 
+                        on:click=trigger_custom_span
+                        class="btn btn-primary"
+                        style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); color: #fff;"
+                    >
+                        {t!(lang, "Trigger Custom Span", "Kích Hoạt Custom Span")}
+                    </button>
+                </div>
+
+                // 3. Exception Recording Card
+                <div style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #EF4444;"></span>
+                        {t!(lang, "Error & Exception Recording", "Ghi Nhận Lỗi & Ngoại Lệ")}
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px;">
+                        {t!(
+                            lang,
+                            "Generate a span that records an simulated JavaScript Error object. This tests how exceptions are categorized and sent to the collector.",
+                            "Tạo một span để ghi nhận một đối tượng Lỗi JavaScript mô phỏng. Thử nghiệm cách phân loại ngoại lệ và gửi tới collector."
+                        )}
+                    </p>
+                    <button 
+                        on:click=trigger_exception
+                        class="btn btn-danger"
+                        style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); color: #fff;"
+                    >
+                        {t!(lang, "Trigger Exception Span", "Kích Hoạt Exception Span")}
+                    </button>
+                </div>
+
+                // 4. Fetch Auto-Instrumentation Card
+                <div style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #F59E0B;"></span>
+                        {t!(lang, "Fetch Request Instrumentation", "Tự động Trace Yêu Cầu Fetch")}
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px;">
+                        {t!(
+                            lang,
+                            "Triggers an HTTP GET request using fetch() to external API. The FetchInstrumentation should intercept this and generate a tracer span for this HTTP request.",
+                            "Kích hoạt một yêu cầu HTTP GET bằng fetch() tới API bên ngoài. FetchInstrumentation sẽ bắt sự kiện này và tạo span cho yêu cầu HTTP."
+                        )}
+                    </p>
+                    <button 
+                        on:click=trigger_fetch
+                        class="btn btn-secondary"
+                        style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #fff;"
+                    >
+                        {t!(lang, "Trigger fetch() Request", "Kích Hoạt Yêu Cầu fetch()")}
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+}
+
