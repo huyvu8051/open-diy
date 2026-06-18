@@ -2016,6 +2016,35 @@ fn OtelTestPage() -> impl IntoView {
         }
     };
 
+    let trigger_faro_log = move |_| {
+        #[cfg(feature = "hydrate")]
+        {
+            use wasm_bindgen::prelude::*;
+            #[wasm_bindgen]
+            extern "C" {
+                #[wasm_bindgen(js_namespace = ["window", "GrafanaFaroWebSdk", "faro", "api"], js_name = pushLog)]
+                fn faro_push_log(args: &js_sys::Array);
+            }
+            let array = js_sys::Array::new();
+            array.push(&JsValue::from_str("Manual test log triggered from open-diy Faro test page"));
+            faro_push_log(&array);
+        }
+    };
+
+    let trigger_faro_error = move |_| {
+        #[cfg(feature = "hydrate")]
+        {
+            use wasm_bindgen::prelude::*;
+            #[wasm_bindgen]
+            extern "C" {
+                #[wasm_bindgen(js_namespace = ["window", "GrafanaFaroWebSdk", "faro", "api"], js_name = pushError)]
+                fn faro_push_error(err: &JsValue);
+            }
+            let err = js_sys::Error::new("Simulated exception error from open-diy Faro test page");
+            faro_push_error(&err);
+        }
+    };
+
 
     view! {
         <div class="otel-test-container" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif;">
@@ -2111,6 +2140,37 @@ fn OtelTestPage() -> impl IntoView {
                     >
                         {t!(lang, "Trigger fetch() Request", "Kích Hoạt Yêu Cầu fetch()")}
                     </button>
+                </div>
+
+                // 5. Grafana Faro RUM Card
+                <div style="border: 1px solid var(--border); padding: 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);">
+                    <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #EC4899;"></span>
+                        {t!(lang, "Grafana Faro RUM Instrumentation", "Thử Nghiệm Grafana Faro RUM")}
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px;">
+                        {t!(
+                            lang,
+                            "Trigger custom logs and exceptions to be captured and sent to the Faro receiver endpoint (faro.opendiy.vn).",
+                            "Gửi log và lỗi mô phỏng đến máy thu thập Faro (faro.opendiy.vn)."
+                        )}
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <button 
+                            on:click=trigger_faro_log
+                            class="btn btn-primary"
+                            style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); color: #fff;"
+                        >
+                            {t!(lang, "Trigger Faro Log", "Gửi Faro Log")}
+                        </button>
+                        <button 
+                            on:click=trigger_faro_error
+                            class="btn btn-danger"
+                            style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); color: #fff;"
+                        >
+                            {t!(lang, "Trigger Faro Exception", "Gửi Faro Exception")}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
