@@ -358,6 +358,21 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                     }"
                 </script>
                 <script src="/js/otel-sdk.min.js" defer="true" />
+                <script src="https://unpkg.com/@grafana/faro-web-sdk@1.9.0/dist/bundle/faro-web-sdk.iife.js" defer="true" />
+                <script>
+                    "window.addEventListener('load', () => {
+                        if (window.GrafanaFaroWebSdk) {
+                            window.GrafanaFaroWebSdk.initializeFaro({
+                                url: 'http://faro.opendiy.vn/collect',
+                                app: {
+                                    name: 'open-diy-frontend',
+                                    version: '0.1.0',
+                                    environment: 'production'
+                                }
+                            });
+                        }
+                    });"
+                </script>
             </head>
             <body>
                 <App/>
