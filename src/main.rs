@@ -54,6 +54,34 @@ async fn main() {
     #[cfg(feature = "trailing_telemetry")]
     init_tracing();
 
+    // Initialize Pyroscope if endpoint is configured
+    if let Ok(pyroscope_endpoint) = std::env::var("PYROSCOPE_ENDPOINT") {
+        use pyroscope::pyroscope::PyroscopeAgentBuilder;
+        use pyroscope::backend::{pprof_backend, PprofConfig, BackendConfig};
+        
+        leptos::logging::log!("Initializing Pyroscope with endpoint: {}", pyroscope_endpoint);
+        let agent = PyroscopeAgentBuilder::new(
+            &pyroscope_endpoint,
+            "open-diy-backend",
+            100, // 100Hz
+            "pyroscope-rs",
+            env!("CARGO_PKG_VERSION"),
+            pprof_backend(PprofConfig::default(), BackendConfig::default()),
+        )
+        .build();
+
+        match agent {
+            Ok(agent) => match agent.start() {
+                Ok(running_agent) => {
+                    Box::leak(Box::new(running_agent));
+                    leptos::logging::log!("Pyroscope agent started successfully");
+                }
+                Err(e) => leptos::logging::log!("Failed to start Pyroscope agent: {:?}", e),
+            },
+            Err(e) => leptos::logging::log!("Failed to build Pyroscope agent: {:?}", e),
+        }
+    }
+
     use axum::{http::header, response::IntoResponse, routing::get, Router};
     use leptos::logging::log;
     use leptos::prelude::*;
