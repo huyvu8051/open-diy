@@ -25,7 +25,7 @@ opentelemetry_sdk = { version = "0.32.1", features = ["rt-tokio"], optional = tr
 opentelemetry-otlp = { version = "0.32.0", features = ["http-proto", "reqwest-blocking-client", "reqwest-rustls"], optional = true }
 axum-tracing-opentelemetry = { version = "0.38.0", optional = true }
 opentelemetry-appender-tracing = { version = "0.32.0", optional = true }
-pyroscope = { version = "2.0.6", features = ["backend-pprof-rs"] }
+pyroscope = { version = "2.0.6", features = ["backend-pprof-rs"], optional = true }
 
 [features]
 hydrate = [
@@ -38,6 +38,7 @@ ssr = [
     "dep:axum",
     "dep:tokio",
     "dep:leptos_axum",
+    "dep:pyroscope",
     "leptos/ssr",
     "leptos_meta/ssr",
     "leptos_router/ssr",
