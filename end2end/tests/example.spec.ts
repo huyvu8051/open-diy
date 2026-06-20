@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
 
+const BASE_URL = process.env.BASE_URL || "https://shop.opendiy.vn";
+
 test.describe("open-diy E2E Test Suite", () => {
   
   test("homepage loads with correct title and header", async ({ page }) => {
-    await page.goto("http://localhost:3000/");
+    await page.goto(`${BASE_URL}/`);
 
     // Check document title
     await expect(page).toHaveTitle("open-diy | Premium 3D Printed Keyboards");
@@ -15,21 +17,21 @@ test.describe("open-diy E2E Test Suite", () => {
   });
 
   test("navigation works between pages", async ({ page }) => {
-    await page.goto("http://localhost:3000/");
+    await page.goto(`${BASE_URL}/`);
 
     // Click "Shop" in the navbar
     await page.click("text=Shop");
-    await expect(page).toHaveURL("http://localhost:3000/shop");
+    await expect(page).toHaveURL(`${BASE_URL}/shop`);
     await expect(page.locator(".section-title")).toContainText("Our Curated Builds");
 
     // Click "About" in the navbar
     await page.click("text=About");
-    await expect(page).toHaveURL("http://localhost:3000/about");
+    await expect(page).toHaveURL(`${BASE_URL}/about`);
     await expect(page.locator(".about-header h1")).toHaveText("Open-Source Keyboards");
   });
 
   test("interactive keyboard customizer updates pricing and adds to cart", async ({ page }) => {
-    await page.goto("http://localhost:3000/builder");
+    await page.goto(`${BASE_URL}/builder`);
 
     // Check default preview spec summary
     await expect(page.locator(".preview-overlay-specs")).toContainText("Layout: dactyl");
@@ -72,7 +74,7 @@ test.describe("open-diy E2E Test Suite", () => {
     await page.click("text=Checkout Order");
 
     // Verify redirect to success page
-    await expect(page).toHaveURL("http://localhost:3000/checkout-success");
+    await expect(page).toHaveURL(`${BASE_URL}/checkout-success`);
     await expect(page.locator(".checkout-page h1")).toHaveText("Order Received!");
   });
 });
