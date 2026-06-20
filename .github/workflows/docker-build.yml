@@ -38,4 +38,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build and push Playwright E2E Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./end2end
+          file: ./end2end/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}-e2e:latest
+            ghcr.io/${{ github.repository }}-e2e:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
 
