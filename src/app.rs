@@ -363,7 +363,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                     "window.addEventListener('load', () => {
                         if (window.GrafanaFaroWebSdk) {
                             window.GrafanaFaroWebSdk.initializeFaro({
-                                url: 'http://faro.opendiy.vn/collect',
+                                url: 'https://faro.opendiy.vn/collect',
                                 app: {
                                     name: 'open-diy-frontend',
                                     version: '0.1.0',
