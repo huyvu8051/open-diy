@@ -18,13 +18,13 @@ for (const baseUrl of targets) {
       await page.waitForTimeout(1500);
       
       // 2. User goes to the About page to read the philosophy
-      await page.click("text=About");
+      await page.locator('a[href="/about"]').first().click();
       await expect(page).toHaveURL(`${baseUrl}/about`);
       await page.evaluate(() => window.scrollBy(0, 600));
       await page.waitForTimeout(2000);
 
       // 3. User navigates to the Shop catalog page
-      await page.click("text=Shop");
+      await page.locator('a[href="/shop"]').first().click();
       await expect(page).toHaveURL(`${baseUrl}/shop`);
       await page.waitForTimeout(1000);
 
@@ -75,7 +75,7 @@ for (const baseUrl of targets) {
       await page.goto(`${baseUrl}/`);
       await page.waitForTimeout(1000);
 
-      await page.click("text=Shop");
+      await page.locator('a[href="/shop"]').first().click();
       await page.waitForTimeout(1000);
 
       const customizeButtons = page.locator("text=Customize");
