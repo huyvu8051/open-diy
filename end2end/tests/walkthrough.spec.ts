@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+const BASE_URL = process.env.BASE_URL || "https://shop.opendiy.vn";
 
 test.describe("open-diy Webapp E2E Walkthrough", () => {
   test.beforeEach(async ({ page }) => {
