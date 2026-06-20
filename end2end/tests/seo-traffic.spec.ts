@@ -29,15 +29,14 @@ for (const baseUrl of targets) {
       await page.waitForTimeout(1000);
 
       // 4. User selects the Dactyl Split keyboard to customize
-      // Clicking on the first "Customize" button (Dactyl)
-      const customizeButtons = page.locator("text=Customize");
-      await customizeButtons.first().click();
-      await expect(page).toHaveURL(new RegExp(`${baseUrl}/builder\\?preset=dactyl`));
+      // Click the first product details view link
+      const detailsButtons = page.locator('.product-card a.btn-primary');
+      await detailsButtons.first().click();
+      await expect(page).toHaveURL(new RegExp(`${baseUrl}/product/`));
       await page.waitForTimeout(1500);
 
-      // 5. User customizes the keyboard options
-      // Select Forest Green color
-      await page.click("div[title='Forest Green']");
+      // Select forest green case option
+      await page.click("text=Forest Green");
       await page.waitForTimeout(800);
       
       // Select Tactile Brown switches
@@ -78,9 +77,9 @@ for (const baseUrl of targets) {
       await page.locator('a[href="/shop"]').first().click();
       await page.waitForTimeout(1000);
 
-      const customizeButtons = page.locator("text=Customize");
-      await customizeButtons.nth(1).click(); // Frosted 60%
-      await expect(page).toHaveURL(new RegExp(`${baseUrl}/builder\\?preset=frosted`));
+      const detailsButtons = page.locator('.product-card a.btn-primary');
+      await detailsButtons.nth(1).click(); // Go to second product card detail page
+      await expect(page).toHaveURL(new RegExp(`${baseUrl}/product/`));
       await page.waitForTimeout(2000);
     });
 
