@@ -109,7 +109,7 @@ impl Product {
 Static Products Data
 ========================================== */
 
-fn get_products() -> Vec<Product> {
+pub fn get_products() -> Vec<Product> {
     vec![
         Product {
             id: String::from("dactyl"),

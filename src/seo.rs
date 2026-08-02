@@ -38,22 +38,31 @@ fn escape_json(value: &str) -> String {
 }
 
 pub fn sitemap_xml() -> String {
-    let urls = [
+    let mut entries = String::new();
+    
+    // Add static pages
+    let static_urls = [
         ("/", "1.0", "weekly"),
         ("/about", "0.7", "monthly"),
     ];
+    for (path, priority, changefreq) in static_urls {
+        entries.push_str(&format!(
+            "  <url><loc>{}</loc><changefreq>{}</changefreq><priority>{}</priority></url>\n",
+            absolute_url(path),
+            changefreq,
+            priority
+        ));
+    }
 
-    let entries = urls
-        .iter()
-        .map(|(path, priority, changefreq)| {
-            format!(
-                "  <url><loc>{}</loc><changefreq>{}</changefreq><priority>{}</priority></url>\n",
-                absolute_url(path),
-                changefreq,
-                priority
-            )
-        })
-        .collect::<String>();
+    // Add dynamic product pages
+    let products = crate::app::get_products();
+    for product in products {
+        let path = format!("/product/{}", product.id);
+        entries.push_str(&format!(
+            "  <url><loc>{}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n",
+            absolute_url(&path)
+        ));
+    }
 
     format!(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n{}</urlset>\n",
