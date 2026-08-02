@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = process.env.BASE_URL || "https://shop.opendiy.vn";
+const BASE_URL = process.env.BASE_URL || "https://opendiy.vn";
 
 test.describe("Homepage Smoke Tour", () => {
   test.beforeEach(async ({ page }) => {
@@ -37,19 +37,10 @@ test.describe("Homepage Smoke Tour", () => {
   });
 
   test("tours the live app without breaking on trackers", async ({ page }) => {
-    // 1) Visit homepage
+    // 1) Visit homepage (which is now the catalog shop)
     await page.goto(BASE_URL);
 
-    // 4) Assert existing class name on homepage: .hero-title
-    const heroTitle = page.locator(".hero-title");
-    await expect(heroTitle).toBeVisible();
-
-    // 2) Go to /shop
-    const shopLink = page.locator('a[href="/shop"]').first();
-    await shopLink.click();
-    await expect(page).toHaveURL(new RegExp("/shop"));
-
-    // Assert existing class name on shop: .section-title
+    // Assert existing class name on homepage: .section-title
     const sectionTitle = page.locator(".section-title");
     await expect(sectionTitle).toBeVisible();
 

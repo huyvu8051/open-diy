@@ -102,7 +102,7 @@ async fn main() {
         
         if let Some(host) = headers.get("host").and_then(|h| h.to_str().ok()) {
             let host_lower = host.to_lowercase();
-            if host_lower.starts_with("opendiy.vn")
+            if host_lower.starts_with("shop.opendiy.vn")
                 || host_lower.starts_with("www.opendiy.vn")
                 || host_lower.starts_with("open-diy.unghotoi.asia")
                 || host_lower.starts_with("open-diy.unghotui.vn")
@@ -114,7 +114,7 @@ async fn main() {
                 } else {
                     path_query
                 };
-                let new_uri = format!("https://shop.opendiy.vn{}", path_query);
+                let new_uri = format!("https://opendiy.vn{}", path_query);
                 return Redirect::permanent(&new_uri).into_response();
             }
         }

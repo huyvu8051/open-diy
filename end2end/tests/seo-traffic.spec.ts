@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 // List of target production domains for traffic generation
 const targets = [
-  "https://shop.opendiy.vn"
+  "https://opendiy.vn"
 ];
 
 for (const baseUrl of targets) {
@@ -24,8 +24,8 @@ for (const baseUrl of targets) {
       await page.waitForTimeout(2000);
 
       // 3. User navigates to the Shop catalog page
-      await page.locator('a[href="/shop"]').first().click();
-      await expect(page).toHaveURL(`${baseUrl}/shop`);
+      await page.locator('a.nav-link[href="/"]').first().click();
+      await expect(page).toHaveURL(`${baseUrl}/`);
       await page.waitForTimeout(1000);
 
       // 4. User selects the Dactyl Split keyboard to customize
@@ -74,7 +74,7 @@ for (const baseUrl of targets) {
       await page.goto(`${baseUrl}/`);
       await page.waitForTimeout(1000);
 
-      await page.locator('a[href="/shop"]').first().click();
+      await page.locator('a.nav-link[href="/"]').first().click();
       await page.waitForTimeout(1000);
 
       const detailsButtons = page.locator('.product-card a.btn-primary');

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = process.env.BASE_URL || "https://shop.opendiy.vn";
+const BASE_URL = process.env.BASE_URL || "https://opendiy.vn";
 
 test.describe("open-diy Webapp E2E Walkthrough", () => {
   test.beforeEach(async ({ page }) => {
@@ -31,8 +31,8 @@ test.describe("open-diy Webapp E2E Walkthrough", () => {
     // Wait for WASM/JS hydration
     await page.waitForTimeout(2000);
     
-    const heroTitle = page.locator(".hero-title");
-    await expect(heroTitle).toBeVisible();
+    const sectionTitle = page.locator(".section-title");
+    await expect(sectionTitle).toBeVisible();
 
     // 2. Test Theme Toggle
     const themeBtn = page.locator(".theme-toggle-btn");
@@ -55,17 +55,17 @@ test.describe("open-diy Webapp E2E Walkthrough", () => {
 
     // Toggle English
     await enButton.click();
-    const shopLinkEn = page.locator('a[href="/shop"]').first();
+    const shopLinkEn = page.locator('a.nav-link[href="/"]').first();
     await expect(shopLinkEn).toHaveText("Shop");
 
     // Toggle Vietnamese
     await viButton.click();
-    const shopLinkVi = page.locator('a[href="/shop"]').first();
+    const shopLinkVi = page.locator('a.nav-link[href="/"]').first();
     await expect(shopLinkVi).toHaveText("Cửa hàng");
 
     // 4. Navigate to Catalog Page
     await shopLinkVi.click();
-    await expect(page).toHaveURL(new RegExp("/shop"));
+    await expect(page).toHaveURL(new RegExp("/"));
     
     const sectionTitle = page.locator(".section-title");
     await expect(sectionTitle).toBeVisible();
