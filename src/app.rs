@@ -460,8 +460,7 @@ pub fn App() -> impl IntoView {
                 <Navbar/>
                 <main class="main-content">
                     <Routes fallback=NotFoundPage>
-                        <Route path=StaticSegment("") view=HomePage/>
-                        <Route path=StaticSegment("shop") view=CatalogPage/>
+                        <Route path=StaticSegment("") view=CatalogPage/>
                         <Route path=(StaticSegment("product"), ParamSegment("id")) view=ProductDetailPage/>
                         <Route path=StaticSegment("about") view=AboutPage/>
                         <Route path=StaticSegment("otel-test") view=OtelTestPage/>
@@ -521,8 +520,7 @@ fn Navbar() -> impl IntoView {
                 />
             </A>
             <ul class="nav-menu desktop-only">
-                <li><A href="/" attr:class="nav-link">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
-                <li><A href="/shop" attr:class="nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
+                <li><A href="/" attr:class="nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
                 <li><A href="/about" attr:class="nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
             </ul>
             <div class="nav-actions" style="display: flex; align-items: center; gap: 16px;">
@@ -596,8 +594,7 @@ fn Navbar() -> impl IntoView {
             // Mobile Menu Overlay
             <div class=move || if menu_open.get() { "mobile-menu open" } else { "mobile-menu" }>
                 <ul class="mobile-nav-links">
-                    <li><A on:click=toggle_menu href="/" attr:class="mobile-nav-link">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
-                    <li><A on:click=toggle_menu href="/shop" attr:class="mobile-nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
+                    <li><A on:click=toggle_menu href="/" attr:class="mobile-nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
                     <li><A on:click=toggle_menu href="/about" attr:class="mobile-nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
                     
                     // Mobile Language Selector
@@ -803,7 +800,7 @@ fn CatalogPage() -> impl IntoView {
         <SeoHead
             title="open-diy Shop | Curated 3D Printed Keyboard Builds".to_string()
             description="Browse curated ergonomic keyboard builds including Dactyl, Frosted 60%, and Alice Curved layouts with 3D printed cases.".to_string()
-            path="/shop".to_string()
+            path="/".to_string()
             image_path="/images/frosted.png".to_string()
         />
         <section class="catalog-section">
@@ -1367,7 +1364,7 @@ fn ProductDetailPage() -> impl IntoView {
                     
                     <section class="builder-section" style="max-width: 1200px; margin: 0 auto; padding: 60px 4% 100px 4%;">
                         <div style="margin-bottom: 24px;">
-                            <A href="/shop" attr:style="color: var(--secondary); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+                            <A href="/" attr:style="color: var(--secondary); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="19" y1="12" x2="5" y2="12"></line>
                                     <polyline points="12 19 5 12 12 5"></polyline>
@@ -1929,8 +1926,7 @@ fn Footer() -> impl IntoView {
                 <div class="footer-col">
                     <h4>{t!(lang, "Quick Links", "Liên kết nhanh")}</h4>
                     <ul class="footer-links">
-                        <li><A href="/">{move || t!(lang, "Home", "Trang chủ")()}</A></li>
-                        <li><A href="/shop">{t!(lang, "Catalog Shop", "Danh mục sản phẩm")}</A></li>
+                        <li><A href="/">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
                         <li><A href="/about">{t!(lang, "Philosophy", "Triết lý")}</A></li>
                         <li><a href="https://shopee.vn/opendiy" target="_blank" rel="noopener noreferrer">{move || t!(lang, "Shopee Store", "Cửa hàng Shopee")()}</a></li>
                     </ul>

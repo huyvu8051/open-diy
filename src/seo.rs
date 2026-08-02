@@ -40,7 +40,6 @@ fn escape_json(value: &str) -> String {
 pub fn sitemap_xml() -> String {
     let urls = [
         ("/", "1.0", "weekly"),
-        ("/shop", "0.9", "weekly"),
         ("/about", "0.7", "monthly"),
     ];
 
