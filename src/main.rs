@@ -82,52 +82,12 @@ async fn main() {
         }
     }
 
-    use axum::{
-        extract::Request,
-        http::header,
-        middleware::{self, Next},
-        response::{IntoResponse, Redirect, Response},
-        routing::get,
-        Router,
-    };
+    use axum::{http::header, response::IntoResponse, routing::get, Router};
     use leptos::logging::log;
     use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
     use open_diy::app::*;
     use open_diy::seo::{robots_txt, sitemap_xml};
-
-    async fn redirect_middleware(request: Request, next: Next) -> Response {
-        let headers = request.headers();
-        let uri = request.uri();
-        
-        if let Some(host) = headers.get("host").and_then(|h| h.to_str().ok()) {
-            let host_lower = host.to_lowercase();
-            if host_lower.starts_with("shop.opendiy.vn")
-                || host_lower.starts_with("www.opendiy.vn")
-                || host_lower.starts_with("open-diy.unghotoi.asia")
-                || host_lower.starts_with("open-diy.unghotui.vn")
-            {
-                let path_query = uri.path_and_query().map(|pq| pq.as_str()).unwrap_or("");
-                let path_query = if path_query.starts_with("/shop") {
-                    let rest = &path_query[5..];
-                    if rest.starts_with('/') { rest } else { "/" }
-                } else {
-                    path_query
-                };
-                let new_uri = format!("https://opendiy.vn{}", path_query);
-                return Redirect::permanent(&new_uri).into_response();
-            }
-        }
-
-        let path = uri.path();
-        if path == "/shop" || path == "/shop/" {
-            let query = uri.query().map(|q| format!("?{}", q)).unwrap_or_default();
-            let new_uri = format!("/{}", query);
-            return Redirect::permanent(&new_uri).into_response();
-        }
-
-        next.run(request).await
-    }
 
     async fn robots_txt_handler() -> impl IntoResponse {
         (
@@ -164,8 +124,7 @@ async fn main() {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())
         })
-        .fallback(leptos_axum::file_and_error_handler(shell))
-        .layer(middleware::from_fn(redirect_middleware));
+        .fallback(leptos_axum::file_and_error_handler(shell));
 
     #[cfg(feature = "trailing_telemetry")]
     let app = app.layer(axum_tracing_opentelemetry::middleware::OtelAxumLayer::default());
