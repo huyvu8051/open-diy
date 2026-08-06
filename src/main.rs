@@ -26,7 +26,7 @@ fn init_tracing() {
             .with_resource(
                 Resource::builder_empty()
                     .with_attributes(vec![KeyValue::new("service.name", "open-diy")])
-                    .build()
+                    .build(),
             )
             .build();
 
@@ -56,10 +56,13 @@ async fn main() {
 
     // Initialize Pyroscope if endpoint is configured
     if let Ok(pyroscope_endpoint) = std::env::var("PYROSCOPE_ENDPOINT") {
+        use pyroscope::backend::{pprof_backend, BackendConfig, PprofConfig};
         use pyroscope::pyroscope::PyroscopeAgentBuilder;
-        use pyroscope::backend::{pprof_backend, PprofConfig, BackendConfig};
-        
-        leptos::logging::log!("Initializing Pyroscope with endpoint: {}", pyroscope_endpoint);
+
+        leptos::logging::log!(
+            "Initializing Pyroscope with endpoint: {}",
+            pyroscope_endpoint
+        );
         let agent = PyroscopeAgentBuilder::new(
             &pyroscope_endpoint,
             "open-diy-backend",

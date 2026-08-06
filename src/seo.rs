@@ -39,12 +39,9 @@ fn escape_json(value: &str) -> String {
 
 pub fn sitemap_xml() -> String {
     let mut entries = String::new();
-    
+
     // Add static pages
-    let static_urls = [
-        ("/", "1.0", "weekly"),
-        ("/about", "0.7", "monthly"),
-    ];
+    let static_urls = [("/", "1.0", "weekly"), ("/about", "0.7", "monthly")];
     for (path, priority, changefreq) in static_urls {
         entries.push_str(&format!(
             "  <url><loc>{}</loc><changefreq>{}</changefreq><priority>{}</priority></url>\n",

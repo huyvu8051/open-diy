@@ -344,6 +344,8 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+                <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
                 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -389,8 +391,6 @@ Main App Component
 pub fn App() -> impl IntoView {
     provide_meta_context();
 
-
-
     let lang = RwSignal::new(Language::Vi); // Default to Vietnamese
     provide_context(LanguageContext { lang });
 
@@ -408,7 +408,9 @@ pub fn App() -> impl IntoView {
                     }
                 } else {
                     // Fallback to system preference if no localStorage value exists
-                    if let Ok(Some(media_query_list)) = window.match_media("(prefers-color-scheme: light)") {
+                    if let Ok(Some(media_query_list)) =
+                        window.match_media("(prefers-color-scheme: light)")
+                    {
                         if media_query_list.matches() {
                             theme.set(Theme::Light);
                         }
@@ -596,7 +598,7 @@ fn Navbar() -> impl IntoView {
                 <ul class="mobile-nav-links">
                     <li><A on:click=toggle_menu href="/" attr:class="mobile-nav-link">{move || t!(lang, "Shop", "Cửa hàng")()}</A></li>
                     <li><A on:click=toggle_menu href="/about" attr:class="mobile-nav-link">{move || t!(lang, "About", "Giới thiệu")()}</A></li>
-                    
+
                     // Mobile Language Selector
                     <li style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
                         <div style="display: flex; justify-content: center; gap: 20px; font-size: 1rem; font-weight: 600;">
@@ -666,8 +668,8 @@ fn HomePage() -> impl IntoView {
                 <span class="gradient-text">{t!(lang, "3D Printed Keyboards", "In 3D Công Thái Học")}</span>
             </h1>
             <p class="hero-subtitle">
-                {t!(lang, 
-                    "Open-source designs manufactured in-house with high-performance plastics. contoured for your comfort, posture, and typing acoustics.", 
+                {t!(lang,
+                    "Open-source designs manufactured in-house with high-performance plastics. contoured for your comfort, posture, and typing acoustics.",
                     "Thiết kế nguồn mở được sản xuất trực tiếp bằng nhựa hiệu năng cao. Thiết kế ôm sát cổ tay tối ưu hóa công thái học và âm học."
                 )}
             </p>
@@ -687,8 +689,8 @@ fn HomePage() -> impl IntoView {
                     <span class="gradient-text">"open-diy"</span> "?"
                 </h2>
                 <p class="section-subtitle">
-                    {t!(lang, 
-                        "We merge advanced additive manufacturing with premium custom keyboard enthusiast specs.", 
+                    {t!(lang,
+                        "We merge advanced additive manufacturing with premium custom keyboard enthusiast specs.",
                         "Chúng tôi kết hợp công nghệ in 3D tiên tiến với các thông số phím cơ custom cao cấp nhất."
                     )}
                 </p>
@@ -702,8 +704,8 @@ fn HomePage() -> impl IntoView {
                     </div>
                     <h3>{t!(lang, "Unrivaled Ergonomics", "Công thái học vượt trội")}</h3>
                     <p>
-                        {t!(lang, 
-                            "Sculpted split designs like the Dactyl place keys in natural column curvature, preventing wrist strain during long typing sessions.", 
+                        {t!(lang,
+                            "Sculpted split designs like the Dactyl place keys in natural column curvature, preventing wrist strain during long typing sessions.",
                             "Thiết kế chia đôi dạng lòng chảo như Dactyl đặt các phím theo độ cong tự nhiên của ngón tay, chống mỏi cổ tay khi gõ lâu."
                         )}
                     </p>
@@ -718,8 +720,8 @@ fn HomePage() -> impl IntoView {
                     </div>
                     <h3>{t!(lang, "Precision 3D Printing", "In 3D siêu chuẩn xác")}</h3>
                     <p>
-                        {t!(lang, 
-                            "We use fine-tuned high-density print settings (0.2mm layer heights, gyroid infill) for superb acoustics and impact-resistant cases.", 
+                        {t!(lang,
+                            "We use fine-tuned high-density print settings (0.2mm layer heights, gyroid infill) for superb acoustics and impact-resistant cases.",
                             "Sử dụng cài đặt in mật độ cao (lớp in 0.2mm, họa tiết xương Gyroid) cho chất âm trầm đầm tay và độ bền vỏ vượt trội."
                         )}
                     </p>
@@ -734,8 +736,8 @@ fn HomePage() -> impl IntoView {
                     </div>
                     <h3>{t!(lang, "Enthusiast Specs Standard", "Chuẩn phím cơ Custom")}</h3>
                     <p>
-                        {t!(lang, 
-                            "Hot-swappable sockets let you replace switches without soldering. Pre-lubed stabs and acoustic foam are included in every build.", 
+                        {t!(lang,
+                            "Hot-swappable sockets let you replace switches without soldering. Pre-lubed stabs and acoustic foam are included in every build.",
                             "Mạch hotswap thay switch nhanh không cần hàn. Stabilizer đã được cân wire, lube sẵn cùng foam tiêu âm đi kèm trong mỗi bản build."
                         )}
                     </p>
@@ -748,8 +750,8 @@ fn HomePage() -> impl IntoView {
                 <span class="hero-tag" style="margin-bottom: 12px;">"FAQ"</span>
                 <h2 class="section-title">{t!(lang, "Keyboard buying questions, answered.", "Giải đáp thắc mắc về bàn phím")}</h2>
                 <p class="section-subtitle">
-                    {t!(lang, 
-                        "Helpful details for shoppers searching for ergonomic, open-source, and 3D printed keyboards.", 
+                    {t!(lang,
+                        "Helpful details for shoppers searching for ergonomic, open-source, and 3D printed keyboards.",
                         "Thông tin hữu ích giúp bạn hiểu rõ hơn về các dòng bàn phím in 3D công thái học nguồn mở."
                     )}
                 </p>
@@ -758,8 +760,8 @@ fn HomePage() -> impl IntoView {
                 <details class="glass-card feature-card" open>
                     <summary style="cursor: pointer; font-weight: 700;">{t!(lang, "What makes open-diy different?", "Sự khác biệt của open-diy là gì?")}</summary>
                     <p style="margin-top: 12px;">
-                        {t!(lang, 
-                            "We combine open-source keyboard design with in-house 3D printing, custom switch choices, and direct links to checkout safely on Shopee.", 
+                        {t!(lang,
+                            "We combine open-source keyboard design with in-house 3D printing, custom switch choices, and direct links to checkout safely on Shopee.",
                             "Chúng tôi kết hợp thiết kế bàn phím nguồn mở với việc in 3D tại chỗ, tùy chọn switch custom và liên kết trực tiếp mua hàng an toàn trên Shopee."
                         )}
                     </p>
@@ -767,8 +769,8 @@ fn HomePage() -> impl IntoView {
                 <details class="glass-card feature-card">
                     <summary style="cursor: pointer; font-weight: 700;">{t!(lang, "Can I build an ergonomic keyboard here?", "Tôi có thể mua bàn phím công thái học ở đây không?")}</summary>
                     <p style="margin-top: 12px;">
-                        {t!(lang, 
-                            "Yes. The catalog highlights split and curved layouts such as Dactyl and Alice-inspired designs, all tuned for better comfort and desk positioning.", 
+                        {t!(lang,
+                            "Yes. The catalog highlights split and curved layouts such as Dactyl and Alice-inspired designs, all tuned for better comfort and desk positioning.",
                             "Có. Danh mục sản phẩm nổi bật với các bố cục chia đôi và uốn cong như Dactyl và Alice, được tối ưu hóa cho sự thoải mái và tư thế gõ."
                         )}
                     </p>
@@ -776,8 +778,8 @@ fn HomePage() -> impl IntoView {
                 <details class="glass-card feature-card">
                     <summary style="cursor: pointer; font-weight: 700;">{t!(lang, "Do you support DIY builders?", "Các bạn có hỗ trợ người tự build (DIY) không?")}</summary>
                     <p style="margin-top: 12px;">
-                        {t!(lang, 
-                            "Absolutely. The About page points to the open-source side of the project, and we list public GitHub repositories for builders who want to print and assemble by themselves.", 
+                        {t!(lang,
+                            "Absolutely. The About page points to the open-source side of the project, and we list public GitHub repositories for builders who want to print and assemble by themselves.",
                             "Hoàn toàn có. Trang giới thiệu hướng tới khía cạnh nguồn mở của dự án, và chúng tôi liệt kê các kho lưu trữ GitHub công khai cho những ai muốn tự in và lắp ráp."
                         )}
                     </p>
@@ -816,14 +818,14 @@ fn CatalogPage() -> impl IntoView {
             </div>
             <div class="glass-card" style="max-width: 1200px; margin: 0 auto 28px auto; padding: 20px 24px;">
                 <p style="margin-bottom: 10px;">
-                    {t!(lang, 
-                        "Each build is designed for people searching for an ergonomic keyboard that feels custom without requiring a full DIY project from scratch.", 
+                    {t!(lang,
+                        "Each build is designed for people searching for an ergonomic keyboard that feels custom without requiring a full DIY project from scratch.",
                         "Mỗi bản build được thiết kế chuyên biệt cho những ai tìm kiếm bàn phím công thái học custom nhưng không muốn tự lắp ráp từ đầu."
                     )}
                 </p>
                 <p>
-                    {t!(lang, 
-                        "Click on any product to view its detailed specifications, and open the Shopee link to customize options and place your order.", 
+                    {t!(lang,
+                        "Click on any product to view its detailed specifications, and open the Shopee link to customize options and place your order.",
                         "Bấm vào bất kỳ sản phẩm nào để xem thông số kỹ thuật chi tiết, và mở liên kết Shopee để lựa chọn tùy biến và đặt hàng."
                     )}
                 </p>
@@ -880,7 +882,10 @@ enum ActiveTab {
 }
 
 #[component]
-fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: String) -> impl IntoView {
+fn KeyboardCustomizer(
+    lang: RwSignal<Language>,
+    #[prop(into)] product_name: String,
+) -> impl IntoView {
     let (case_color, set_case_color) = signal("#18181b".to_string());
     let (keycap_color, set_keycap_color) = signal("#4b5563".to_string());
     let (cable_color, set_cable_color) = signal("#09090b".to_string());
@@ -895,7 +900,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
                     "#db2777" => "Neon Pink".to_string(),
                     "#f4f4f5" => "Frosted White".to_string(),
                     "#0284c7" => "Cyber Blue".to_string(),
-                    _ => hex.to_string()
+                    _ => hex.to_string(),
                 }
             };
 
@@ -906,7 +911,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
                     "#0891b2" => "Neon Cyan".to_string(),
                     "#7c3aed" => "Lavender".to_string(),
                     "#ea580c" => "Pastel Orange".to_string(),
-                    _ => hex.to_string()
+                    _ => hex.to_string(),
                 }
             };
 
@@ -916,7 +921,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
                     "#06b6d4" => "Cyan Coil".to_string(),
                     "#8b5cf6" => "Violet Coil".to_string(),
                     "#e11d48" => "Ruby Coil".to_string(),
-                    _ => hex.to_string()
+                    _ => hex.to_string(),
                 }
             };
 
@@ -925,10 +930,10 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
             let keycap = get_keycap_name(&keycap_color.get());
             let cable = get_cable_name(&cable_color.get());
             let eval_str = format!(
-                "window.orderConfiguration('{}', '{}', '{}', '{}')", 
-                name.replace('\'', "\\'"), 
-                case.replace('\'', "\\'"), 
-                keycap.replace('\'', "\\'"), 
+                "window.orderConfiguration('{}', '{}', '{}', '{}')",
+                name.replace('\'', "\\'"),
+                case.replace('\'', "\\'"),
+                keycap.replace('\'', "\\'"),
                 cable.replace('\'', "\\'")
             );
             let _ = js_sys::eval(&eval_str);
@@ -953,17 +958,17 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
                 <svg width="100%" height="280" viewBox="0 0 600 300" style="background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: inset 0 0 40px rgba(0,0,0,0.6);">
                     // Coiled Cable
                     <path d="M 220 150 C 230 110, 240 110, 250 150 C 260 190, 270 190, 280 150 C 290 110, 300 110, 310 150 C 320 190, 330 190, 340 150 C 350 110, 360 110, 380 150" fill="none" stroke=move || cable_color.get() stroke-width="8" stroke-linecap="round" stroke-linejoin="round" style="transition: stroke 0.3s ease;"/>
-                    
+
                     // Left Hand Case (Curved split keyboard half)
                     <path d="M 50 100 Q 130 70 210 100 Q 230 150 210 220 Q 130 250 50 220 Q 30 150 50 100 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="3" style="transition: fill 0.3s ease;"/>
                     // Left Thumb cluster
                     <path d="M 180 180 Q 220 190 220 230 Q 180 250 150 230 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="2" style="transition: fill 0.3s ease;"/>
-                    
+
                     // Right Hand Case
                     <path d="M 550 100 Q 470 70 390 100 Q 370 150 390 220 Q 470 250 550 220 Q 570 150 550 100 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="3" style="transition: fill 0.3s ease;"/>
                     // Right Thumb cluster
                     <path d="M 420 180 Q 380 190 380 230 Q 420 250 450 230 Z" fill=move || case_color.get() stroke="rgba(255,255,255,0.15)" stroke-width="2" style="transition: fill 0.3s ease;"/>
-                    
+
                     // Left keycaps grid
                     <rect x="75" y="115" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
                     <rect x="75" y="138" width="16" height="16" rx="3" fill=move || keycap_color.get() style="transition: fill 0.3s ease;"/>
@@ -1021,7 +1026,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
                         ].into_iter().map(|(val, name)| {
                             let is_active = move || case_color.get() == val;
                             view! {
-                                <button 
+                                <button
                                     on:click=move |_| set_case_color.set(val.to_string())
                                     type="button"
                                     class=move || if is_active() { "btn btn-primary btn-sm" } else { "btn btn-secondary btn-sm" }
@@ -1049,7 +1054,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
                         ].into_iter().map(|(val, name)| {
                             let is_active = move || keycap_color.get() == val;
                             view! {
-                                <button 
+                                <button
                                     on:click=move |_| set_keycap_color.set(val.to_string())
                                     type="button"
                                     class=move || if is_active() { "btn btn-primary btn-sm" } else { "btn btn-secondary btn-sm" }
@@ -1076,7 +1081,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
                         ].into_iter().map(|(val, name)| {
                             let is_active = move || cable_color.get() == val;
                             view! {
-                                <button 
+                                <button
                                     on:click=move |_| set_cable_color.set(val.to_string())
                                     type="button"
                                     class=move || if is_active() { "btn btn-primary btn-sm" } else { "btn btn-secondary btn-sm" }
@@ -1091,7 +1096,7 @@ fn KeyboardCustomizer(lang: RwSignal<Language>, #[prop(into)] product_name: Stri
 
                 // Pre-order configuration action
                 <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 10px;">
-                    <button 
+                    <button
                         on:click=order_click
                         type="button"
                         class="btn btn-primary"
@@ -1166,18 +1171,18 @@ fn HandEstimator(lang: RwSignal<Language>) -> impl IntoView {
                 <h3 style="font-size: 1.15rem; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--secondary);">
                     {t!(lang, "Enter Hand Dimensions", "Nhập kích thước bàn tay")}
                 </h3>
-                
+
                 // Slide 1: Middle Finger Length
                 <div class="slider-group" style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
                         <span style="color: var(--text-muted);">{t!(lang, "Middle Finger Length", "Chiều dài ngón giữa")}</span>
                         <span style="color: #fff; font-weight: 600;">{move || format!("{:.1} cm", finger_len.get())}</span>
                     </div>
-                    <input 
-                        type="range" 
-                        min="5.0" 
-                        max="11.0" 
-                        step="0.1" 
+                    <input
+                        type="range"
+                        min="5.0"
+                        max="11.0"
+                        step="0.1"
                         value=move || finger_len.get().to_string()
                         on:input=move |ev| {
                             if let Ok(val) = event_target_value(&ev).parse::<f64>() {
@@ -1194,11 +1199,11 @@ fn HandEstimator(lang: RwSignal<Language>) -> impl IntoView {
                         <span style="color: var(--text-muted);">{t!(lang, "Palm Width", "Chiều rộng lòng bàn tay")}</span>
                         <span style="color: #fff; font-weight: 600;">{move || format!("{:.1} cm", palm_width.get())}</span>
                     </div>
-                    <input 
-                        type="range" 
-                        min="6.0" 
-                        max="12.0" 
-                        step="0.1" 
+                    <input
+                        type="range"
+                        min="6.0"
+                        max="12.0"
+                        step="0.1"
                         value=move || palm_width.get().to_string()
                         on:input=move |ev| {
                             if let Ok(val) = event_target_value(&ev).parse::<f64>() {
@@ -1254,15 +1259,15 @@ fn SoundTestPlayer(lang: RwSignal<Language>) -> impl IntoView {
                 {t!(lang, "Switch Sound Acoustics", "Thử nghiệm âm thanh gõ Switch")}
             </h3>
             <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
-                {t!(lang, 
-                   "Click any switch to simulate its mechanical acoustic sound test synthesized live using Web Audio API.", 
+                {t!(lang,
+                   "Click any switch to simulate its mechanical acoustic sound test synthesized live using Web Audio API.",
                    "Click vào từng loại switch để nghe thử âm thanh gõ cơ học được giả lập trực tiếp qua Web Audio API."
                 )}
             </p>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 10px;">
                 // Yellow Linear Switch
-                <button 
+                <button
                     on:click=move |_| play_sound("linear")
                     type="button"
                     class="sound-card-btn"
@@ -1278,7 +1283,7 @@ fn SoundTestPlayer(lang: RwSignal<Language>) -> impl IntoView {
                 </button>
 
                 // Brown Tactile Switch
-                <button 
+                <button
                     on:click=move |_| play_sound("tactile")
                     type="button"
                     class="sound-card-btn"
@@ -1294,7 +1299,7 @@ fn SoundTestPlayer(lang: RwSignal<Language>) -> impl IntoView {
                 </button>
 
                 // Blue Clicky Switch
-                <button 
+                <button
                     on:click=move |_| play_sound("clicky")
                     type="button"
                     class="sound-card-btn"
@@ -1321,9 +1326,9 @@ Product Detail Page Component
 fn ProductDetailPage() -> impl IntoView {
     let params = use_params_map();
     let lang = expect_context::<LanguageContext>().lang;
-    
+
     let product_id = move || params.with(|p| p.get("id").unwrap_or_default());
-    
+
     let product = move || {
         let id = product_id();
         get_products().into_iter().find(|p| p.id == id)
@@ -1361,7 +1366,7 @@ fn ProductDetailPage() -> impl IntoView {
                         image_path=img.clone()
                     />
                     <JsonLd json=product_json_ld(&name_alt, &desc_alt, &img_alt, &page_path_alt, price_alt)/>
-                    
+
                     <section class="builder-section" style="max-width: 1200px; margin: 0 auto; padding: 60px 4% 100px 4%;">
                         <div style="margin-bottom: 24px;">
                             <A href="/" attr:style="color: var(--secondary); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
@@ -1379,7 +1384,7 @@ fn ProductDetailPage() -> impl IntoView {
                                 <div class="preview-image-container" style="aspect-ratio: 16/10; overflow: hidden; border-radius: var(--radius-lg); border: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
                                     <img src=selected_img style="width: 100%; height: 100%; object-fit: cover;" alt=name.clone() fetchpriority="high"/>
                                 </div>
-                                
+
                                 // Thumbnail list
                                 <div class="preview-gallery" style="display: flex; gap: 12px; margin-top: 14px; margin-bottom: 24px;">
                                     {images_gallery.into_iter().map(|img_url| {
@@ -1387,7 +1392,7 @@ fn ProductDetailPage() -> impl IntoView {
                                         let img_url_clone2 = img_url.clone();
                                         let is_active = move || selected_img.get() == img_url_clone1;
                                         view! {
-                                            <button 
+                                            <button
                                                 on:click=move |_| set_selected_img.set(img_url_clone2.clone())
                                                 type="button"
                                                 style=move || if is_active() {
@@ -1427,11 +1432,11 @@ fn ProductDetailPage() -> impl IntoView {
                                             {t!(lang, "Customize & Buy on Shopee (Coming Soon)", "Tùy biến & Mua trên Shopee (Sắp mở)")}
                                         </a>
 
-                                        <a 
-                                            href="https://m.me/1111759575360830" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer" 
-                                            class="btn btn-primary" 
+                                        <a
+                                            href="https://m.me/1111759575360830"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="btn btn-primary"
                                             style="width: 100%; background: linear-gradient(135deg, #0084FF, #00C6FF); border: none; display: flex; align-items: center; justify-content: center;"
                                         >
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
@@ -1439,7 +1444,7 @@ fn ProductDetailPage() -> impl IntoView {
                                             </svg>
                                             {t!(lang, "Order Direct via Messenger (Pre-order)", "Đặt hàng trực tiếp qua Messenger (Pre-order)")}
                                         </a>
-                                        
+
                                         {move || github.clone().map(|url| view! {
                                             <a href=url target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%;">
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
@@ -1484,21 +1489,21 @@ fn ProductDetailPage() -> impl IntoView {
 
                             // Tab Buttons
                             <div class="tabs-nav" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
-                                <button 
+                                <button
                                     on:click=move |_| set_active_tab.set(ActiveTab::Customizer)
                                     type="button"
                                     class=move || if active_tab.get() == ActiveTab::Customizer { "btn btn-primary" } else { "btn btn-secondary" }
                                 >
                                     {t!(lang, "Color Customizer", "Bộ phối màu phím")}
                                 </button>
-                                <button 
+                                <button
                                     on:click=move |_| set_active_tab.set(ActiveTab::Estimator)
                                     type="button"
                                     class=move || if active_tab.get() == ActiveTab::Estimator { "btn btn-primary" } else { "btn btn-secondary" }
                                 >
                                     {t!(lang, "Hand Size Estimator", "Đo kích thước tay")}
                                 </button>
-                                <button 
+                                <button
                                     on:click=move |_| set_active_tab.set(ActiveTab::SoundTest)
                                     type="button"
                                     class=move || if active_tab.get() == ActiveTab::SoundTest { "btn btn-primary" } else { "btn btn-secondary" }
@@ -1522,11 +1527,11 @@ fn ProductDetailPage() -> impl IntoView {
                             <h3 style="font-size: 1.5rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-weight: 700; text-align: center; letter-spacing: 0.05em; text-transform: uppercase;">
                                 {t!(lang, "Product Details & Deep Dive", "Chi tiết sản phẩm & Đi sâu tìm hiểu")}
                             </h3>
-                            
+
                             {desc.split("\n\n").enumerate().map(|(idx, block)| {
                                 let block_img = images_detail.get(idx).or_else(|| images_detail.first()).cloned().unwrap_or_default();
                                 let is_even = idx % 2 == 0;
-                                
+
                                 let (title, content) = if let Some((t, c)) = block.split_once('\n') {
                                     if t.ends_with(':') {
                                         (t.trim_end_matches(':').to_string(), c.to_string())
@@ -1536,7 +1541,7 @@ fn ProductDetailPage() -> impl IntoView {
                                 } else {
                                     (String::new(), block.to_string())
                                 };
-                                
+
                                 let row_class = if is_even {
                                     "glass-card product-details-row"
                                 } else {
@@ -1549,7 +1554,7 @@ fn ProductDetailPage() -> impl IntoView {
                                         <div class="product-details-image-pane">
                                             <img src=block_img alt="Detail showcase image" loading="lazy"/>
                                         </div>
-                                        
+
                                         // Content Pane
                                         <div class="product-details-content-pane">
                                             {if !title.is_empty() {
@@ -1596,8 +1601,8 @@ fn AboutPage() -> impl IntoView {
                 <span class="hero-tag">{t!(lang, "Philosophy", "Triết lý")}</span>
                 <h1 class="gradient-text">{t!(lang, "Open-Source Keyboards", "Bàn phím Nguồn mở")}</h1>
                 <p class="section-subtitle">
-                    {t!(lang, 
-                        "We believe hardware should be owned and customized, not locked behind IP walls.", 
+                    {t!(lang,
+                        "We believe hardware should be owned and customized, not locked behind IP walls.",
                         "Chúng tôi tin rằng phần cứng cần được sở hữu và tùy biến bởi người dùng, chứ không bị khóa sau bức tường bản quyền."
                     )}
                 </p>
@@ -1608,15 +1613,15 @@ fn AboutPage() -> impl IntoView {
             <div class="about-body">
                 <p>
                     <strong>"open-diy"</strong>
-                    {t!(lang, 
-                        " was founded on the idea that standard, mass-produced rectangular keyboards don't fit human anatomy or satisfy our tactile expectations. The custom keyboard hobby has exploded, but premium cases remain expensive and difficult to source. We unlock this by utilizing high-precision industrial 3D printers.", 
+                    {t!(lang,
+                        " was founded on the idea that standard, mass-produced rectangular keyboards don't fit human anatomy or satisfy our tactile expectations. The custom keyboard hobby has exploded, but premium cases remain expensive and difficult to source. We unlock this by utilizing high-precision industrial 3D printers.",
                         " được thành lập dựa trên ý tưởng rằng các bàn phím hình chữ nhật sản xuất hàng loạt thông thường không phù hợp với giải phẫu học của tay người hoặc đáp ứng kỳ vọng về xúc giác. Thú chơi bàn phím cơ custom đã bùng nổ, nhưng các bộ vỏ premium vẫn đắt đỏ và khó tiếp cận. Chúng tôi giải quyết điều đó bằng cách sử dụng máy in 3D công nghiệp độ chính xác cao."
                     )}
                 </p>
 
                 <p>
-                    {t!(lang, 
-                        "If you are looking for a 3D printed keyboard shop that still feels approachable, the goal here is to make the learning curve shorter without removing the enthusiast details people care about.", 
+                    {t!(lang,
+                        "If you are looking for a 3D printed keyboard shop that still feels approachable, the goal here is to make the learning curve shorter without removing the enthusiast details people care about.",
                         "Nếu bạn đang tìm kiếm một cửa hàng bán phím in 3D dễ tiếp cận, mục tiêu ở đây là làm giảm thời gian tìm hiểu của bạn nhưng vẫn giữ nguyên các chi tiết custom mà những người đam mê phím cơ mong đợi."
                     )}
                 </p>
@@ -1624,8 +1629,8 @@ fn AboutPage() -> impl IntoView {
                 <div class="about-highlight-box">
                     <h3 style="margin-bottom: 12px; font-size: 1.2rem; color: #fff;">{t!(lang, "Our Printing Philosophy", "Triết lý in 3D của chúng tôi")}</h3>
                     <p>
-                        {t!(lang, 
-                            "We run fine-tuned, speed-reduced 3D printer settings to produce sturdy shell walls. By selecting PETG and dense ASA filaments instead of cheap PLA, our cases are structurally stable and do not wrap or degrade. The internal layout utilizes a grid of hollow spaces that acts as a natural dampening chamber, converting harsh typewriter clacks into deep, satisfying acoustics.", 
+                        {t!(lang,
+                            "We run fine-tuned, speed-reduced 3D printer settings to produce sturdy shell walls. By selecting PETG and dense ASA filaments instead of cheap PLA, our cases are structurally stable and do not wrap or degrade. The internal layout utilizes a grid of hollow spaces that acts as a natural dampening chamber, converting harsh typewriter clacks into deep, satisfying acoustics.",
                             "Chúng tôi vận hành máy in với tốc độ được tinh chỉnh chậm hơn để tạo ra các lớp thành vỏ cực kỳ chắc chắn. Bằng cách chọn sợi nhựa PETG và ASA mật độ cao thay vì nhựa PLA rẻ tiền, vỏ phím của chúng tôi có kết cấu bền vững, không bị cong vênh hay lão hóa theo thời gian. Bố cục bên trong sử dụng lưới các khoảng trống hoạt động như một buồng tiêu âm tự nhiên, biến tiếng lách cách đanh tai thành âm gõ phím trầm ấm, dễ chịu."
                         )}
                     </p>
@@ -1660,8 +1665,8 @@ fn AboutPage() -> impl IntoView {
                 </ul>
 
                 <p>
-                    {t!(lang, 
-                        "Because our keyboards are open-source projects, we actively support the DIY community. If you own a 3D printer, you can download all casing files (STL/STEP) directly from public Github repositories. If you want us to handle the printing, soldering, lubing, and assembly - that is where our store comes in!", 
+                    {t!(lang,
+                        "Because our keyboards are open-source projects, we actively support the DIY community. If you own a 3D printer, you can download all casing files (STL/STEP) directly from public Github repositories. If you want us to handle the printing, soldering, lubing, and assembly - that is where our store comes in!",
                         "Vì bàn phím của chúng tôi là dự án nguồn mở, chúng tôi tích cực hỗ trợ cộng đồng DIY. Nếu bạn sở hữu máy in 3D, bạn có thể tải toàn bộ tệp thiết kế vỏ (STL/STEP) trực tiếp từ các kho Github công khai. Còn nếu bạn muốn chúng tôi lo phần in ấn, hàn mạch, lube switch và lắp ráp - đó chính là lý do cửa hàng ra đời!"
                     )}
                 </p>
@@ -1698,7 +1703,7 @@ pub struct ChatMessage {
 fn AiAssistant() -> impl IntoView {
     let (is_open, set_is_open) = signal(false);
     let (input, set_input) = signal(String::new());
-    
+
     // Initial greeting
     let initial_msg = ChatMessage {
         is_ai: true,
@@ -1707,41 +1712,60 @@ fn AiAssistant() -> impl IntoView {
     let (messages, set_messages) = signal(vec![initial_msg]);
 
     let handle_send = move |text_val: String| {
-        if text_val.trim().is_empty() { return; }
-        
+        if text_val.trim().is_empty() {
+            return;
+        }
+
         // Add user message
-        set_messages.update(|msgs| msgs.push(ChatMessage {
-            is_ai: false,
-            text: text_val.clone(),
-        }));
-        
+        set_messages.update(|msgs| {
+            msgs.push(ChatMessage {
+                is_ai: false,
+                text: text_val.clone(),
+            })
+        });
+
         set_input.set(String::new());
-        
+
         // Find best match response
         let text_lower = text_val.to_lowercase();
         let response_text = if text_lower.contains("corne") {
             "Bàn phím Corne Cherry Split là dòng phím tách đôi 40% (42 phím), có màn hình OLED hiển thị thông số và hệ thống LED RGB rực rỡ. Rất nhỏ gọn và phù hợp cho người có cỡ tay nhỏ đến trung bình. Giá từ $129.".to_string()
         } else if text_lower.contains("dactyl") || text_lower.contains("manuform") {
             "Bàn phím Dactyl-Manuform có thiết kế dạng lòng chảo cong 3D ôm sát theo hướng ngón tay, giúp giảm tối đa mỏi vai gáy và cổ tay. Phù hợp cho lập trình viên và người gõ phím cường độ cao. Giá từ $219.".to_string()
-        } else if text_lower.contains("bảo hành") || text_lower.contains("hỏng") || text_lower.contains("sửa") {
+        } else if text_lower.contains("bảo hành")
+            || text_lower.contains("hỏng")
+            || text_lower.contains("sửa")
+        {
             "Tất cả phím chính hãng Open-DIY đều được bảo hành phần cứng (mạch PCB, mối hàn, IC điều khiển) trong 12 tháng. Hỗ trợ sửa chữa trọn đời sản phẩm.".to_string()
-        } else if text_lower.contains("đo tay") || text_lower.contains("cỡ tay") || text_lower.contains("kích thước") {
+        } else if text_lower.contains("đo tay")
+            || text_lower.contains("cỡ tay")
+            || text_lower.contains("kích thước")
+        {
             "Bạn có thể dùng tính năng 'Đo kích thước tay' ngay tại trang sản phẩm trên website. Đo chiều dài ngón giữa và bề ngang lòng bàn tay để hệ thống tự động gợi ý phím Corne hay Dactyl phù hợp!".to_string()
-        } else if text_lower.contains("sound") || text_lower.contains("âm thanh") || text_lower.contains("gõ thử") {
+        } else if text_lower.contains("sound")
+            || text_lower.contains("âm thanh")
+            || text_lower.contains("gõ thử")
+        {
             "Chúng tôi có bộ phát thử âm thanh switch (Linear, Tactile, Clicky) tích hợp sẵn trong trang chi tiết sản phẩm. Bạn hãy ghé xem sản phẩm và bấm tab 'Thử âm thanh switch' để nghe nhé!".to_string()
-        } else if text_lower.contains("cọc") || text_lower.contains("mua") || text_lower.contains("đặt") || text_lower.contains("thanh toán") {
+        } else if text_lower.contains("cọc")
+            || text_lower.contains("mua")
+            || text_lower.contains("đặt")
+            || text_lower.contains("thanh toán")
+        {
             "Quy trình đặt mua của chúng tôi: Bạn chọn màu sắc vỏ/keycap trên trang web, copy cấu hình gửi qua Messenger và chuyển khoản cọc 50%. Shop sẽ tiến hành lắp ráp thủ công trong 3-5 ngày và ship COD phần còn lại.".to_string()
         } else {
             "Tôi chưa hiểu rõ câu hỏi của bạn. Bạn có thể hỏi về: Corne, Dactyl, Đo tay, Sound test, Bảo hành, hoặc nhấn 'Trò chuyện trực tiếp' để gửi tin nhắn đến Messenger của shop nhé!".to_string()
         };
 
         // Add AI response immediately
-        set_messages.update(|msgs| msgs.push(ChatMessage {
-            is_ai: true,
-            text: response_text,
-        }));
+        set_messages.update(|msgs| {
+            msgs.push(ChatMessage {
+                is_ai: true,
+                text: response_text,
+            })
+        });
     };
-    
+
     let send_suggestion = move |text: &'static str| {
         let t = text.to_string();
         handle_send(t);
@@ -1749,7 +1773,7 @@ fn AiAssistant() -> impl IntoView {
 
     view! {
         // AI Float Button
-        <button 
+        <button
             on:click=move |_| set_is_open.update(|open| *open = !*open)
             type="button"
             class="messenger-float-btn"
@@ -1802,28 +1826,28 @@ fn AiAssistant() -> impl IntoView {
 
                     // Suggestion Chips
                     <div style="padding: 8px 16px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.03); justify-content: flex-start;">
-                        <button 
+                        <button
                             on:click=move |_| send_suggestion("Tìm hiểu phím Corne Split")
                             type="button"
                             style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
                         >
                             "⌨️ Phím Corne"
                         </button>
-                        <button 
+                        <button
                             on:click=move |_| send_suggestion("Tìm hiểu phím Dactyl-Manuform")
                             type="button"
                             style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
                         >
                             "👑 Phím Dactyl"
                         </button>
-                        <button 
+                        <button
                             on:click=move |_| send_suggestion("Làm sao để đo kích thước tay?")
                             type="button"
                             style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
                         >
                             "📏 Đo tay"
                         </button>
-                        <button 
+                        <button
                             on:click=move |_| send_suggestion("Chính sách đặt cọc và mua hàng")
                             type="button"
                             style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 0.72rem; color: var(--secondary); cursor: pointer; transition: all 0.2s;"
@@ -1833,7 +1857,7 @@ fn AiAssistant() -> impl IntoView {
                     </div>
 
                     // Footer Input
-                    <form 
+                    <form
                         on:submit=move |ev| {
                             ev.prevent_default();
                             let val = input.get();
@@ -1843,14 +1867,14 @@ fn AiAssistant() -> impl IntoView {
                         }
                         style="padding: 12px 16px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background: rgba(0,0,0,0.2);"
                     >
-                        <input 
+                        <input
                             type="text"
                             placeholder="Nhập câu hỏi..."
                             prop:value=input
                             on:input=move |ev| set_input.set(event_target_value(&ev))
                             style="flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; color: #fff; outline: none; transition: border 0.2s;"
                         />
-                        <button 
+                        <button
                             type="submit"
                             class="btn btn-primary btn-sm"
                             style="padding: 0 14px; border-radius: 8px; background: linear-gradient(135deg, #8b5cf6, #06b6d4); border: none; display: flex; align-items: center; justify-content: center;"
@@ -1863,10 +1887,10 @@ fn AiAssistant() -> impl IntoView {
 
                     // Direct Messenger Link
                     <div style="padding: 8px; text-align: center; background: rgba(0,84,255,0.1); border-top: 1px solid rgba(255,255,255,0.03);">
-                        <a 
-                            href="https://m.me/1111759575360830" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                        <a
+                            href="https://m.me/1111759575360830"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             style="font-size: 0.72rem; color: #0084ff; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;"
                         >
                             <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
@@ -1917,8 +1941,8 @@ fn Footer() -> impl IntoView {
                 <div class="footer-col">
                     <h4 class="gradient-text">"open-diy"</h4>
                     <p style="margin-bottom: 15px; max-width: 320px;">
-                        {t!(lang, 
-                            "Enabling ergonomics and absolute hardware customizability through additive manufacturing and open source designs.", 
+                        {t!(lang,
+                            "Enabling ergonomics and absolute hardware customizability through additive manufacturing and open source designs.",
                             "Mang lại thiết kế công thái học và khả năng tùy biến phần cứng tuyệt đối thông qua sản xuất in 3D và các thiết kế nguồn mở."
                         )}
                     </p>
@@ -1999,7 +2023,10 @@ fn OtelTestPage() -> impl IntoView {
                 #[wasm_bindgen(js_namespace = ["window", "otelHelper"], js_name = triggerException)]
                 fn trigger_exception_js(span_name: &str, err_msg: &str);
             }
-            trigger_exception_js("manual_error_span", "Simulated exception error from test page");
+            trigger_exception_js(
+                "manual_error_span",
+                "Simulated exception error from test page",
+            );
         }
     };
 
@@ -2022,7 +2049,9 @@ fn OtelTestPage() -> impl IntoView {
                 fn faro_push_log(args: &js_sys::Array);
             }
             let array = js_sys::Array::new();
-            array.push(&JsValue::from_str("Manual test log triggered from open-diy Faro test page"));
+            array.push(&JsValue::from_str(
+                "Manual test log triggered from open-diy Faro test page",
+            ));
             faro_push_log(&array);
         }
     };
@@ -2041,13 +2070,12 @@ fn OtelTestPage() -> impl IntoView {
         }
     };
 
-
     view! {
         <div class="otel-test-container" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif;">
             <h1 class="gradient-text" style="font-size: 2.5rem; margin-bottom: 20px;">
                 {t!(lang, "OpenTelemetry Web SDK Test Suite", "Bộ Thử Nghiệm OpenTelemetry Web SDK")}
             </h1>
-            
+
             <p style="margin-bottom: 30px; font-size: 1.1rem; line-height: 1.6; color: var(--text);">
                 {t!(
                     lang,
@@ -2085,7 +2113,7 @@ fn OtelTestPage() -> impl IntoView {
                             "Tự động tạo và kết thúc một span trong môi trường trình duyệt. Thử nghiệm việc định cấu hình trace thủ công phía client bằng SDK web."
                         )}
                     </p>
-                    <button 
+                    <button
                         on:click=trigger_custom_span
                         class="btn btn-primary"
                         style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); color: #fff;"
@@ -2107,7 +2135,7 @@ fn OtelTestPage() -> impl IntoView {
                             "Tạo một span để ghi nhận một đối tượng Lỗi JavaScript mô phỏng. Thử nghiệm cách phân loại ngoại lệ và gửi tới collector."
                         )}
                     </p>
-                    <button 
+                    <button
                         on:click=trigger_exception
                         class="btn btn-danger"
                         style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); color: #fff;"
@@ -2129,7 +2157,7 @@ fn OtelTestPage() -> impl IntoView {
                             "Kích hoạt một yêu cầu HTTP GET bằng fetch() tới API hệ thống (/api/otel-test). FetchInstrumentation sẽ bắt sự kiện này và tạo span cho yêu cầu HTTP."
                         )}
                     </p>
-                    <button 
+                    <button
                         on:click=trigger_fetch
                         class="btn btn-secondary"
                         style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #fff;"
@@ -2152,14 +2180,14 @@ fn OtelTestPage() -> impl IntoView {
                         )}
                     </p>
                     <div style="display: flex; gap: 10px;">
-                        <button 
+                        <button
                             on:click=trigger_faro_log
                             class="btn btn-primary"
                             style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); color: #fff;"
                         >
                             {t!(lang, "Trigger Faro Log", "Gửi Faro Log")}
                         </button>
-                        <button 
+                        <button
                             on:click=trigger_faro_error
                             class="btn btn-danger"
                             style="padding: 10px 20px; font-weight: 600; cursor: pointer; border-radius: 8px; border: none; background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); color: #fff;"
@@ -2172,4 +2200,3 @@ fn OtelTestPage() -> impl IntoView {
         </div>
     }
 }
-
