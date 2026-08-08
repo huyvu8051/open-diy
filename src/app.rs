@@ -849,9 +849,10 @@ fn CatalogPage() -> impl IntoView {
             <div class="grid grid-cols-3" style="max-width: 1200px; margin: 0 auto;">
                 {move || {
                     let current_lang = lang.get();
-                    products.iter().map(|p| {
+                    products.iter().enumerate().map(|(idx, p)| {
                         let p_id = p.id.clone();
                         let p_img = p.image.clone();
+                        let p_img_srcset = srcset_640(&p_img);
                         let p_tag = p.tag(current_lang);
                         let p_name = p.name(current_lang);
                         let p_name_alt = p_name.clone();
@@ -860,12 +861,28 @@ fn CatalogPage() -> impl IntoView {
                         let detail_url_1 = format!("/product/{}", p_id);
                         let detail_url_2 = detail_url_1.clone();
                         let detail_url_3 = detail_url_1.clone();
+                        // The first card renders above the fold and is the
+                        // page's actual LCP element — lazy-loading it (as
+                        // all cards previously were) meant the browser
+                        // didn't discover/prioritize it until the preload
+                        // scanner already had other work queued. Every
+                        // other card keeps lazy+auto since they're
+                        // below-the-fold on any real viewport.
+                        let is_first = idx == 0;
                         view! {
                             <div class="glass-card product-card">
                                 <A href=detail_url_1 attr:style="display: block; position: relative;">
                                     <div class="product-image-wrapper">
                                         <span class="product-tag">{p_tag}</span>
-                                        <img src=p_img alt=p_name_alt loading="lazy" decoding="async"/>
+                                        <img
+                                            src=p_img
+                                            srcset=p_img_srcset
+                                            sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 400px"
+                                            alt=p_name_alt
+                                            loading=if is_first { "eager" } else { "lazy" }
+                                            fetchpriority=if is_first { "high" } else { "auto" }
+                                            decoding="async"
+                                        />
                                     </div>
                                 </A>
                                 <div class="product-info">
