@@ -119,10 +119,30 @@ async fn main() {
     // Generate the list of routes in your Leptos App
     let routes = generate_route_list(App);
 
+    // wasm-bindgen's JS glue (open-diy.js) and its paired open-diy_bg.wasm
+    // are never content-hashed (leptos 0.8's <HydrationScripts> only knows
+    // the plain "/pkg/open-diy.*" names — see the hash-files note in
+    // Cargo.toml for why hashing them isn't viable here), so they always
+    // deploy under the same URL. open-diy.js was defaulting to a 4h
+    // Cache-Control from the generic fallback file handler below; a client
+    // (or Cloudflare) holding that cached past a deploy pairs it with the
+    // new .wasm and hits `WebAssembly.instantiate(): ... function import
+    // requires a callable` — observed live on opendiy.vn. no-cache forces
+    // revalidation on every request instead, so a stale cache can't outlive
+    // the deploy that invalidated it.
+    let pkg_dir = format!("{}/{}", leptos_options.site_root, leptos_options.site_pkg_dir);
+    let pkg_service = tower::ServiceBuilder::new()
+        .layer(tower_http::set_header::SetResponseHeaderLayer::overriding(
+            header::CACHE_CONTROL,
+            axum::http::HeaderValue::from_static("no-cache"),
+        ))
+        .service(tower_http::services::ServeDir::new(pkg_dir));
+
     let app = Router::new()
         .route("/robots.txt", get(robots_txt_handler))
         .route("/sitemap.xml", get(sitemap_xml_handler))
         .route("/api/otel-test", get(otel_test_handler))
+        .nest_service("/pkg", pkg_service)
         .leptos_routes(&leptos_options, routes, {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())

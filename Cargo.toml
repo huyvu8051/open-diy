@@ -10,6 +10,8 @@ crate-type = ["cdylib", "rlib"]
 leptos = { version = "0.8.0" }
 leptos_router = { version = "0.8.0" }
 axum = { version = "0.8.0", optional = true }
+tower = { version = "0.5", optional = true }
+tower-http = { version = "0.6", features = ["fs", "set-header"], optional = true }
 console_error_panic_hook = { version = "0.1", optional = true }
 leptos_axum = { version = "0.8.0", optional = true }
 leptos_meta = { version = "0.8.0" }
@@ -36,6 +38,8 @@ hydrate = [
 ]
 ssr = [
     "dep:axum",
+    "dep:tower",
+    "dep:tower-http",
     "dep:tokio",
     "dep:leptos_axum",
     "dep:pyroscope",
@@ -101,15 +105,16 @@ env = "DEV"
 
 # Generate hashes for compiled JS/WASM/CSS files to bust cache on deployment.
 #
-# Was false: every deploy overwrote the same open-diy.js/open-diy_bg.wasm
-# filenames, so a client (or Cloudflare — which was caching open-diy.js for
-# 4h) holding a pre-deploy cached copy of the JS glue would pair it with the
-# new .wasm. wasm-bindgen glue/binary pairs that don't match throw
-# `WebAssembly.instantiate(): ... function import requires a callable` at
-# runtime — observed live on opendiy.vn right after a deploy. Hashed
-# filenames make each build's bundle a distinct URL, so a stale cache just
-# keeps serving an old-but-internally-consistent pair instead.
-hash-files = true
+# Tried true, reverted: cargo-leptos does content-hash the built
+# open-diy.*.wasm/.js/.css filenames on disk, but leptos 0.8's
+# <HydrationScripts>/<AutoReload> (leptos_integration_utils) only reads the
+# hash for the CSS <Stylesheet> link — the JS/WASM <script>/<link
+# modulepreload> tags are still rendered with the old plain
+# "/pkg/open-diy.wasm" name regardless of this flag. With hash-files=true
+# that plain-named file no longer exists on disk at all, so it's a
+# permanent 404, not a fix. See the cache-control change on the /pkg route
+# in main.rs instead for the actual fix to the cache-mismatch LinkError.
+hash-files = false
 
 
 
