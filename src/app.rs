@@ -109,6 +109,15 @@ impl Product {
 Static Products Data
 ========================================== */
 
+/// Every product image `foo.webp` has a matching `foo-640.webp` (see
+/// public/images/) generated for smaller screens — full-size product photos
+/// are 1024x1024, but the hero and product-detail image containers render
+/// at 100vw on mobile, so without this the browser was downloading a
+/// ~1024px image to fill a ~350-400px box.
+fn srcset_640(path: &str) -> String {
+    format!("{} 640w, {} 1024w", path.replace(".webp", "-640.webp"), path)
+}
+
 pub fn get_products() -> Vec<Product> {
     vec![
         Product {
@@ -678,7 +687,13 @@ fn HomePage() -> impl IntoView {
                 <A href="/about" attr:class="btn btn-secondary">{t!(lang, "Our Philosophy", "Triết lý thiết kế")}</A>
             </div>
             <div class="hero-visual">
-                <img src="/images/dactyl.webp" alt="Dactyl Manuform Custom Keyboard" fetchpriority="high"/>
+                <img
+                    src="/images/dactyl.webp"
+                    srcset="/images/dactyl-640.webp 640w, /images/dactyl.webp 1024w"
+                    sizes="(max-width: 1000px) 100vw, 1000px"
+                    alt="Dactyl Manuform Custom Keyboard"
+                    fetchpriority="high"
+                />
             </div>
         </div>
 
@@ -1382,7 +1397,14 @@ fn ProductDetailPage() -> impl IntoView {
                             // Left Column - Image Gallery (Only gallery, no specs card to keep it clean)
                             <div class="builder-preview-pane">
                                 <div class="preview-image-container" style="aspect-ratio: 16/10; overflow: hidden; border-radius: var(--radius-lg); border: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
-                                    <img src=selected_img style="width: 100%; height: 100%; object-fit: cover;" alt=name.clone() fetchpriority="high"/>
+                                    <img
+                                        src=selected_img
+                                        srcset=move || srcset_640(&selected_img.get())
+                                        sizes="(max-width: 1000px) 100vw, 1000px"
+                                        style="width: 100%; height: 100%; object-fit: cover;"
+                                        alt=name.clone()
+                                        fetchpriority="high"
+                                    />
                                 </div>
 
                                 // Thumbnail list
