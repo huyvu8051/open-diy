@@ -99,8 +99,17 @@ browserquery = "defaults"
 # The environment Leptos will run in, usually either "DEV" or "PROD"
 env = "DEV"
 
-# Generate hashes for compiled JS/WASM/CSS files to bust cache on deployment
-hash-files = false
+# Generate hashes for compiled JS/WASM/CSS files to bust cache on deployment.
+#
+# Was false: every deploy overwrote the same open-diy.js/open-diy_bg.wasm
+# filenames, so a client (or Cloudflare — which was caching open-diy.js for
+# 4h) holding a pre-deploy cached copy of the JS glue would pair it with the
+# new .wasm. wasm-bindgen glue/binary pairs that don't match throw
+# `WebAssembly.instantiate(): ... function import requires a callable` at
+# runtime — observed live on opendiy.vn right after a deploy. Hashed
+# filenames make each build's bundle a distinct URL, so a stale cache just
+# keeps serving an old-but-internally-consistent pair instead.
+hash-files = true
 
 
 
