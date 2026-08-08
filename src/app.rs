@@ -117,11 +117,11 @@ pub fn get_products() -> Vec<Product> {
             name_vi: String::from("Bàn phím Ergonomic Dactyl-ManuForm"),
             tag_en: String::from("Best Seller"),
             tag_vi: String::from("Bán chạy nhất"),
-            image: String::from("/images/dactyl.png"),
+            image: String::from("/images/dactyl.webp"),
             images: vec![
-                String::from("/images/dactyl.png"),
-                String::from("/images/dactyl_side.png"),
-                String::from("/images/dactyl_setup.png"),
+                String::from("/images/dactyl.webp"),
+                String::from("/images/dactyl_side.webp"),
+                String::from("/images/dactyl_setup.webp"),
             ],
             price: 219.0,
             desc_en: String::from("The ultimate split ergonomic design. Hand-scaffolded curved keywells, separate left/right modules for optimal desk positioning."),
@@ -155,11 +155,11 @@ pub fn get_products() -> Vec<Product> {
             name_vi: String::from("Bàn phím Frosted 60% Neon"),
             tag_en: String::from("Minimalist"),
             tag_vi: String::from("Tối giản"),
-            image: String::from("/images/frosted.png"),
+            image: String::from("/images/frosted.webp"),
             images: vec![
-                String::from("/images/frosted.png"),
-                String::from("/images/frosted_side.png"),
-                String::from("/images/frosted_setup.png"),
+                String::from("/images/frosted.webp"),
+                String::from("/images/frosted_side.webp"),
+                String::from("/images/frosted_setup.webp"),
             ],
             price: 109.0,
             desc_en: String::from("Compact 60% layout with a semi-translucent case. Ideal for clean desk setups with vibrant customizable RGB underglow."),
@@ -193,11 +193,11 @@ pub fn get_products() -> Vec<Product> {
             name_vi: String::from("Bàn phím Alice Curved Forest"),
             tag_en: String::from("Ergonomic"),
             tag_vi: String::from("Công thái học"),
-            image: String::from("/images/alice.png"),
+            image: String::from("/images/alice.webp"),
             images: vec![
-                String::from("/images/alice.png"),
-                String::from("/images/alice_side.png"),
-                String::from("/images/alice_setup.png"),
+                String::from("/images/alice.webp"),
+                String::from("/images/alice_side.webp"),
+                String::from("/images/alice_setup.webp"),
             ],
             price: 149.0,
             desc_en: String::from("Unibody ergonomic curved layout. Reduces wrist ulnar deviation without the learning curve of a fully split keyboard."),
@@ -231,11 +231,11 @@ pub fn get_products() -> Vec<Product> {
             name_vi: String::from("Bàn phím Ergonomic Corne Cherry"),
             tag_en: String::from("Ultra-Compact"),
             tag_vi: String::from("Siêu nhỏ gọn"),
-            image: String::from("/images/corne.png"),
+            image: String::from("/images/corne.webp"),
             images: vec![
-                String::from("/images/corne.png"),
-                String::from("/images/corne_side.png"),
-                String::from("/images/corne_setup.png"),
+                String::from("/images/corne.webp"),
+                String::from("/images/corne_side.webp"),
+                String::from("/images/corne_setup.webp"),
             ],
             price: 129.0,
             desc_en: String::from("Ultra-compact 40% split layout. Highly optimized mapping, customized dual OLED displays, and brilliant customizable RGB underglow."),
@@ -269,11 +269,11 @@ pub fn get_products() -> Vec<Product> {
             name_vi: String::from("Kê tay Gỗ Walnut cho Dactyl"),
             tag_en: String::from("Accessories"),
             tag_vi: String::from("Phụ kiện"),
-            image: String::from("/images/wristrests.png"),
+            image: String::from("/images/wristrests.webp"),
             images: vec![
-                String::from("/images/wristrests.png"),
-                String::from("/images/wristrests_side.png"),
-                String::from("/images/wristrests_setup.png"),
+                String::from("/images/wristrests.webp"),
+                String::from("/images/wristrests_side.webp"),
+                String::from("/images/wristrests_setup.webp"),
             ],
             price: 39.0,
             desc_en: String::from("Handcrafted premium American Walnut wood. Artfully sculpted and contoured to perfectly match Dactyl Manuform split casings."),
@@ -511,12 +511,12 @@ fn Navbar() -> impl IntoView {
         <nav class="navbar">
             <A href="/" attr:class="nav-brand">
                 <img
-                    src="/images/logo_light.png"
+                    src="/images/logo_light.webp"
                     alt="Open-DIY Logo"
                     class="logo-light"
                 />
                 <img
-                    src="/images/logo_dark.png"
+                    src="/images/logo_dark.webp"
                     alt="Open-DIY Logo"
                     class="logo-dark"
                 />
@@ -657,7 +657,7 @@ fn HomePage() -> impl IntoView {
             title="open-diy | Custom 3D Printed Keyboards".to_string()
             description="Shop ergonomic 3D printed keyboards with open-source designs, custom switches, and premium keycaps.".to_string()
             path="/".to_string()
-            image_path="/images/dactyl.png".to_string()
+            image_path="/images/dactyl.webp".to_string()
         />
         <JsonLd json=faq_json_ld()/>
         <div class="hero">
@@ -678,7 +678,7 @@ fn HomePage() -> impl IntoView {
                 <A href="/about" attr:class="btn btn-secondary">{t!(lang, "Our Philosophy", "Triết lý thiết kế")}</A>
             </div>
             <div class="hero-visual">
-                <img src="/images/dactyl.png" alt="Dactyl Manuform Custom Keyboard" fetchpriority="high"/>
+                <img src="/images/dactyl.webp" alt="Dactyl Manuform Custom Keyboard" fetchpriority="high"/>
             </div>
         </div>
 
@@ -803,15 +803,15 @@ fn CatalogPage() -> impl IntoView {
             title="open-diy Shop | Curated 3D Printed Keyboard Builds".to_string()
             description="Browse curated ergonomic keyboard builds including Dactyl, Frosted 60%, and Alice Curved layouts with 3D printed cases.".to_string()
             path="/".to_string()
-            image_path="/images/frosted.png".to_string()
+            image_path="/images/frosted.webp".to_string()
         />
         <section class="catalog-section">
             <div class="section-header">
                 <span class="hero-tag" style="margin-bottom: 12px;">{t!(lang, "Catalog", "Danh mục")}</span>
-                <h1 class="section-title">
+                <h2 class="section-title">
                     {t!(lang, "Our ", "Các mẫu phím ")}
                     <span class="gradient-text">{t!(lang, "Curated Builds", "Custom Tuyển Chọn")}</span>
-                </h1>
+                </h2>
                 <p class="section-subtitle">
                     {t!(lang, "Browse our professional ergonomic layouts and order securely on Shopee.", "Xem các bố cục công thái học chuyên nghiệp của chúng tôi và đặt hàng an toàn qua Shopee.")}
                 </p>
@@ -1594,7 +1594,7 @@ fn AboutPage() -> impl IntoView {
             title="open-diy About | Open-Source Keyboard Manufacturing".to_string()
             description="Learn how open-diy combines open-source keyboard designs with precise 3D printing, ergonomic layouts, and DIY-friendly hardware support.".to_string()
             path="/about".to_string()
-            image_path="/images/alice.png".to_string()
+            image_path="/images/alice.webp".to_string()
         />
         <div class="about-section">
             <div class="about-header">
@@ -1608,7 +1608,7 @@ fn AboutPage() -> impl IntoView {
                 </p>
             </div>
 
-            <img src="/images/alice.png" alt="Close-up of a 3D printed Alice keyboard case" class="about-image" loading="lazy" decoding="async"/>
+            <img src="/images/alice.webp" alt="Close-up of a 3D printed Alice keyboard case" class="about-image" loading="lazy" decoding="async"/>
 
             <div class="about-body">
                 <p>
@@ -1915,7 +1915,7 @@ fn NotFoundPage() -> impl IntoView {
             title="open-diy | Page Not Found".to_string()
             description="The page you requested could not be found on open-diy.".to_string()
             path="/404".to_string()
-            image_path="/images/dactyl.png".to_string()
+            image_path="/images/dactyl.webp".to_string()
             robots="noindex,follow".to_string()
         />
         <div class="checkout-page">

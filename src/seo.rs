@@ -73,7 +73,7 @@ pub fn organization_json_ld() -> String {
         SITE_NAME,
         site_origin(),
         absolute_url("/favicon.ico"),
-        absolute_url("/images/dactyl.png")
+        absolute_url("/images/dactyl.webp")
     )
 }
 
