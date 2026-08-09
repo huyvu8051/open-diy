@@ -130,7 +130,10 @@ async fn main() {
     // requires a callable` — observed live on opendiy.vn. no-cache forces
     // revalidation on every request instead, so a stale cache can't outlive
     // the deploy that invalidated it.
-    let pkg_dir = format!("{}/{}", leptos_options.site_root, leptos_options.site_pkg_dir);
+    let pkg_dir = format!(
+        "{}/{}",
+        leptos_options.site_root, leptos_options.site_pkg_dir
+    );
     let pkg_service = tower::ServiceBuilder::new()
         .layer(tower_http::set_header::SetResponseHeaderLayer::overriding(
             header::CACHE_CONTROL,

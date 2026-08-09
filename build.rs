@@ -2,7 +2,7 @@ use std::time::SystemTime;
 
 fn main() {
     let git_hash = std::process::Command::new("git")
-        .args(&["rev-parse", "--short", "HEAD"])
+        .args(["rev-parse", "--short", "HEAD"])
         .output()
         .ok()
         .and_then(|output| String::from_utf8(output.stdout).ok())

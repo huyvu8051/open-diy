@@ -153,30 +153,26 @@ pub fn SeoHead(
     let robots = robots.unwrap_or_else(|| "index,follow,max-image-preview:large".to_string());
 
     view! {
-        <Title text=title.clone()/>
-        <Meta name="description" content=description.clone()/>
-        <Meta name="robots" content=robots/>
-        <Meta name="theme-color" content="#0f172a"/>
-        <Meta property="og:site_name" content=SITE_NAME/>
-        <Meta property="og:type" content="website"/>
-        <Meta property="og:title" content=title.clone()/>
-        <Meta property="og:description" content=description.clone()/>
-        <Meta property="og:url" content=canonical.clone()/>
-        <Meta property="og:image" content=image.clone()/>
-        <Meta property="og:image:alt" content=title.clone()/>
-        <Meta name="twitter:card" content="summary_large_image"/>
-        <Meta name="twitter:title" content=title.clone()/>
-        <Meta name="twitter:description" content=description.clone()/>
-        <Meta name="twitter:image" content=image.clone()/>
-        <Link rel="canonical" href=canonical/>
+        <Title text=title.clone() />
+        <Meta name="description" content=description.clone() />
+        <Meta name="robots" content=robots />
+        <Meta name="theme-color" content="#0f172a" />
+        <Meta property="og:site_name" content=SITE_NAME />
+        <Meta property="og:type" content="website" />
+        <Meta property="og:title" content=title.clone() />
+        <Meta property="og:description" content=description.clone() />
+        <Meta property="og:url" content=canonical.clone() />
+        <Meta property="og:image" content=image.clone() />
+        <Meta property="og:image:alt" content=title.clone() />
+        <Meta name="twitter:card" content="summary_large_image" />
+        <Meta name="twitter:title" content=title.clone() />
+        <Meta name="twitter:description" content=description.clone() />
+        <Meta name="twitter:image" content=image.clone() />
+        <Link rel="canonical" href=canonical />
     }
 }
 
 #[component]
 pub fn JsonLd(json: String) -> impl IntoView {
-    view! {
-        <Script type_="application/ld+json">
-            {json}
-        </Script>
-    }
+    view! { <Script type_="application/ld+json">{json}</Script> }
 }
