@@ -5,7 +5,16 @@
 # previously every push recompiled all ~180 dependency crates from
 # scratch (~12-13 min), since this Dockerfile just did `COPY . .` +
 # `cargo leptos build` with no caching at all.
-FROM lukemathwalker/cargo-chef:latest-rust-1 AS chef
+#
+# Deliberately NOT `lukemathwalker/cargo-chef:latest-rust-1` here: that
+# image's Rust/glibc doesn't track this project's `rust:1.95.0-slim-bookworm`
+# base — the first attempt at this built a binary requiring GLIBC_2.38,
+# which the debian:bookworm-slim runner stage below (glibc 2.36) can't
+# satisfy, crash-looping in production (`GLIBC_2.38 not found`) until
+# rolled back. Installing cargo-chef via binstall onto the exact same base
+# image already used everywhere else in this Dockerfile keeps the glibc the
+# runner stage links against unchanged.
+FROM rust:1.95.0-slim-bookworm AS chef
 WORKDIR /app
 RUN apt-get update && apt-get install -y \
     pkg-config \
@@ -16,7 +25,7 @@ RUN apt-get update && apt-get install -y \
 RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz \
     && tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz \
     && cp cargo-binstall /usr/local/cargo/bin
-RUN cargo binstall -y cargo-leptos
+RUN cargo binstall -y cargo-chef cargo-leptos
 RUN rustup target add wasm32-unknown-unknown
 
 FROM chef AS planner
