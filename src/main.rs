@@ -1,8 +1,5 @@
 #![recursion_limit = "512"]
 
-// cache-warm test: trivial change, no Cargo.toml/Cargo.lock touched — should
-// hit cargo-chef's cached dependency layer and build much faster than the
-// from-scratch runs before it.
 #[cfg(feature = "trailing_telemetry")]
 fn init_tracing() {
     use opentelemetry::global;
