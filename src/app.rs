@@ -470,7 +470,7 @@ pub fn App() -> impl IntoView {
     });
 
     view! {
-        <Stylesheet id="leptos" href=format!("/pkg/open-diy.css?v={}", env!("GIT_HASH")) />
+        <Stylesheet id="leptos" href="/pkg/open-diy.css" />
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
         <Script src="/js/audio.js" defer="true" />
