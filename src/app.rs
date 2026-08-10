@@ -2,7 +2,7 @@ use crate::seo::{
     faq_json_ld, organization_json_ld, product_json_ld, website_json_ld, JsonLd, SeoHead,
 };
 use leptos::prelude::*;
-use leptos_meta::{provide_meta_context, MetaTags, Script, Stylesheet};
+use leptos_meta::{provide_meta_context, HashedStylesheet, MetaTags, Script};
 use leptos_router::{
     components::{Route, Router, Routes, A},
     hooks::use_params_map,
@@ -366,7 +366,8 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                     rel="stylesheet"
                 />
                 <AutoReload options=options.clone() />
-                <HydrationScripts options />
+                <HydrationScripts options=options.clone() />
+                <HashedStylesheet options id="leptos" />
                 <MetaTags />
                 <script>
                     "if (localStorage.getItem('theme') === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
@@ -470,7 +471,6 @@ pub fn App() -> impl IntoView {
     });
 
     view! {
-        <Stylesheet id="leptos" href="/pkg/open-diy.css" />
         <Script type_="application/ld+json">{organization_json_ld()}</Script>
         <Script type_="application/ld+json">{website_json_ld()}</Script>
         <Script src="/js/audio.js" defer="true" />

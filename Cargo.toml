@@ -99,16 +99,23 @@ env = "DEV"
 
 # Generate hashes for compiled JS/WASM/CSS files to bust cache on deployment.
 #
-# Tried true, reverted: cargo-leptos does content-hash the built
-# open-diy.*.wasm/.js/.css filenames on disk, but leptos 0.8's
-# <HydrationScripts>/<AutoReload> (leptos_integration_utils) only reads the
-# hash for the CSS <Stylesheet> link — the JS/WASM <script>/<link
-# modulepreload> tags are still rendered with the old plain
-# "/pkg/open-diy.wasm" name regardless of this flag. With hash-files=true
-# that plain-named file no longer exists on disk at all, so it's a
-# permanent 404, not a fix. See the cache-control change on the /pkg route
-# in main.rs instead for the actual fix to the cache-mismatch LinkError.
-hash-files = false
+# A previous attempt at this (see git history) broke JS/WASM entirely, but
+# not because Leptos lacks support for it — <HydrationScripts> in the
+# `leptos` crate itself (src/hydration/mod.rs) does read a hash for both
+# js and wasm, same as <HashedStylesheet> does for css. The actual bug was
+# that this repo's Dockerfile never copied cargo-leptos's generated
+# `hash.txt` into the final image — it only copied the binary and
+# target/site. <HydrationScripts> looks for hash.txt next to the running
+# executable (`current_exe().parent()`), didn't find it, and silently fell
+# back to plain "open-diy.js"/"open-diy.wasm" — filenames that no longer
+# existed on disk once cargo-leptos had already hashed them at build time.
+# Fixed now: Dockerfile copies hash.txt next to the binary, and
+# LEPTOS_HASH_FILES=true tells the running server to actually use it.
+#
+# Also requires using <HashedStylesheet options .../> instead of
+# <Stylesheet href="..."/> for the CSS link — the plain <Stylesheet>
+# component is explicitly documented as not hash-aware.
+hash-files = true
 
 
 

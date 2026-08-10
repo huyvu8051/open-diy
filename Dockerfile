@@ -38,12 +38,19 @@ WORKDIR /app
 # Copy the server binary and site assets from the builder stage
 COPY --from=builder /app/target/release/open-diy /app/
 COPY --from=builder /app/target/site /app/site
+# <HydrationScripts>/<HashedStylesheet> look for this file next to the
+# running binary (current_exe().parent()) to know the content hashes
+# cargo-leptos already baked into the js/wasm/css filenames under
+# target/site/pkg — without it they silently fall back to unhashed names
+# that don't exist on disk anymore. See the hash-files note in Cargo.toml.
+COPY --from=builder /app/target/release/hash.txt /app/
 
 
 # Set environment variables for Leptos SSR
 ENV LEPTOS_SITE_ROOT=/app/site
 ENV LEPTOS_SITE_ADDR=0.0.0.0:3000
 ENV LEPTOS_ENV=PROD
+ENV LEPTOS_HASH_FILES=true
 
 
 

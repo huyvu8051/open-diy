@@ -119,17 +119,14 @@ async fn main() {
     // Generate the list of routes in your Leptos App
     let routes = generate_route_list(App);
 
-    // wasm-bindgen's JS glue (open-diy.js) and its paired open-diy_bg.wasm
-    // are never content-hashed (leptos 0.8's <HydrationScripts> only knows
-    // the plain "/pkg/open-diy.*" names — see the hash-files note in
-    // Cargo.toml for why hashing them isn't viable here), so they always
-    // deploy under the same URL. open-diy.js was defaulting to a 4h
-    // Cache-Control from the generic fallback file handler below; a client
-    // (or Cloudflare) holding that cached past a deploy pairs it with the
-    // new .wasm and hits `WebAssembly.instantiate(): ... function import
-    // requires a callable` — observed live on opendiy.vn. no-cache forces
-    // revalidation on every request instead, so a stale cache can't outlive
-    // the deploy that invalidated it.
+    // Everything under /pkg is content-hashed by cargo-leptos (hash-files =
+    // true in Cargo.toml) — open-diy.<hash>.js, .wasm, and .css. A new
+    // deploy with different content gets a different URL entirely, so it's
+    // safe to cache these as long as possible: no client or CDN can ever
+    // serve a stale one, because "stale" and "wrong URL" are the same thing
+    // here. (This used to be no-cache instead, from when js/wasm weren't
+    // actually hashed due to a Dockerfile bug — see git history and the
+    // hash-files note in Cargo.toml.)
     let pkg_dir = format!(
         "{}/{}",
         leptos_options.site_root, leptos_options.site_pkg_dir
@@ -137,7 +134,7 @@ async fn main() {
     let pkg_service = tower::ServiceBuilder::new()
         .layer(tower_http::set_header::SetResponseHeaderLayer::overriding(
             header::CACHE_CONTROL,
-            axum::http::HeaderValue::from_static("no-cache"),
+            axum::http::HeaderValue::from_static("public, max-age=31536000, immutable"),
         ))
         .service(tower_http::services::ServeDir::new(pkg_dir));
 
