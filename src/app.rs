@@ -359,6 +359,12 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
                 <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+                <link
+                    rel="icon"
+                    type="image/svg+xml"
+                    href="/images/open_diy_icon_only_dark.svg"
+                />
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
                 <link
@@ -532,8 +538,12 @@ fn Navbar() -> impl IntoView {
     view! {
         <nav class="navbar">
             <A href="/" attr:class="nav-brand">
-                <img src="/images/logo_light.webp" alt="Open-DIY Logo" class="logo-light" />
-                <img src="/images/logo_dark.webp" alt="Open-DIY Logo" class="logo-dark" />
+                <img src="/images/open_diy_icon_only.svg" alt="Open-DIY Logo" class="logo-light" />
+                <img
+                    src="/images/open_diy_icon_only_dark.svg"
+                    alt="Open-DIY Logo"
+                    class="logo-dark"
+                />
             </A>
             <ul class="nav-menu desktop-only">
                 <li>
