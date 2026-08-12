@@ -614,8 +614,12 @@ html:not(.light) .hero-diagram-dark {
   top: 46%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: var(--font-display);
-  font-weight: 600;
+  /* System font on purpose: this is decorative and at ~0.035 opacity
+     the exact face is invisible, but as the largest text block on the
+     page it was getting picked as the LCP candidate — waiting on the
+     Oswald network fetch added ~2.3s of pure render delay to LCP. */
+  font-family: 'Arial Narrow', sans-serif;
+  font-weight: 700;
   font-size: min(28vw, 340px);
   white-space: nowrap;
   color: var(--text-main);

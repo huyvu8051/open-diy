@@ -138,11 +138,25 @@ async fn main() {
         ))
         .service(tower_http::services::ServeDir::new(pkg_dir));
 
+    // Product photos and logo assets aren't content-hashed like /pkg, so no
+    // "immutable" here — but they change rarely enough (and Cloudflare sits
+    // in front with its own purge path) that a 30-day browser cache is a
+    // safe win. Lighthouse was flagging ~390 KiB of missed cache-lifetime
+    // savings on these before this.
+    let images_dir = format!("{}/images", leptos_options.site_root);
+    let images_service = tower::ServiceBuilder::new()
+        .layer(tower_http::set_header::SetResponseHeaderLayer::overriding(
+            header::CACHE_CONTROL,
+            axum::http::HeaderValue::from_static("public, max-age=2592000"),
+        ))
+        .service(tower_http::services::ServeDir::new(images_dir));
+
     let app = Router::new()
         .route("/robots.txt", get(robots_txt_handler))
         .route("/sitemap.xml", get(sitemap_xml_handler))
         .route("/api/otel-test", get(otel_test_handler))
         .nest_service("/pkg", pkg_service)
+        .nest_service("/images", images_service)
         .leptos_routes(&leptos_options, routes, {
             let leptos_options = leptos_options.clone();
             move || shell(leptos_options.clone())
