@@ -362,7 +362,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
                 <link
-                    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+                    href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
                     rel="stylesheet"
                 />
                 <AutoReload options=options.clone() />
@@ -486,6 +486,7 @@ pub fn App() -> impl IntoView {
                             view=ProductDetailPage
                         />
                         <Route path=StaticSegment("about") view=AboutPage />
+                        <Route path=StaticSegment("checkout") view=CheckoutPage />
                         <Route path=StaticSegment("otel-test") view=OtelTestPage />
                     </Routes>
                 </main>
@@ -941,9 +942,108 @@ fn CatalogPage() -> impl IntoView {
             path="/".to_string()
             image_path="/images/frosted.webp".to_string()
         />
-        <section class="catalog-section">
+        <div class="hero">
+            <span class="hero-tag plate-label">
+                {t!(lang, "Custom Keyboard Workshop", "Xưởng Chế Tác Bàn Phím Custom")}
+            </span>
+            <h1 class="hero-title">
+                {t!(lang, "Ergonomic keyboards, ", "Bàn phím công thái học, ")}
+                <span class="gradient-text">
+                    {t!(lang, "printed to fit your hands.", "in 3D vừa vặn đôi tay bạn.")}
+                </span>
+            </h1>
+            <p class="hero-subtitle">
+                {t!(
+                    lang,
+                    "Every case is drawn, sliced, and printed in-house — split layouts, hot-swap sockets, and a wood wrist rest cut to match.",
+                    "Mỗi bộ vỏ được thiết kế, cắt lớp và in 3D ngay tại xưởng — bố cục tách rời, đế hot-swap, và kê tay gỗ đo vừa theo bộ."
+                )}
+            </p>
+            <div class="hero-actions">
+                <a href="#catalog" class="btn btn-primary">
+                    {t!(lang, "View the catalog", "Xem danh mục")}
+                </a>
+                <a
+                    href="https://shopee.vn/opendiy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-secondary"
+                >
+                    {t!(lang, "Shopee Store", "Cửa hàng Shopee")}
+                </a>
+            </div>
+            <div class="hero-diagram-wrap">
+                <div class="hero-callouts">
+                    <div class="hero-callout">
+                        <span>
+                            {t!(
+                                lang, "3D-printed shell · 0.2mm layer", "Vỏ in 3D · lớp 0.2mm"
+                            )}
+                        </span>
+                        <span class="leader"></span>
+                    </div>
+                    <div class="hero-callout">
+                        <span>{t!(lang, "Hot-swap sockets", "Đế hot-swap")}</span>
+                        <span class="leader"></span>
+                    </div>
+                    <div class="hero-callout">
+                        <span>
+                            {t!(
+                                lang, "Hand-assembled per order", "Lắp ráp thủ công theo đơn"
+                            )}
+                        </span>
+                        <span class="leader"></span>
+                    </div>
+                </div>
+                <div class="hero-diagram">
+                    <img
+                        src="/images/open_diy_icon_only.svg"
+                        class="hero-diagram-light"
+                        alt="Open-DIY mark: hands assembling a split keyboard"
+                        width="600"
+                        height="600"
+                    />
+                    <img
+                        src="/images/open_diy_icon_only_dark.svg"
+                        class="hero-diagram-dark"
+                        alt="Open-DIY mark: hands assembling a split keyboard"
+                        width="600"
+                        height="600"
+                    />
+                </div>
+            </div>
+            <div class="hero-scroll-cue">
+                <span></span>
+                {t!(lang, "Scroll", "Cuộn xuống")}
+            </div>
+        </div>
+
+        <div class="stats-band">
+            <div class="stat-item">
+                <span class="stat-num">{products.len()}</span>
+                <span class="stat-label">{t!(lang, "Build variants", "Mẫu build")}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">"0.2mm"</span>
+                <span class="stat-label">
+                    {t!(lang, "Print layer resolution", "Độ phân giải lớp in")}
+                </span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">"100%"</span>
+                <span class="stat-label">{t!(lang, "Hand-assembled", "Lắp ráp thủ công")}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">"PETG/ASA"</span>
+                <span class="stat-label">
+                    {t!(lang, "Polymaker filament", "Sợi nhựa Polymaker")}
+                </span>
+            </div>
+        </div>
+
+        <section class="catalog-section" id="catalog">
             <div class="section-header">
-                <span class="hero-tag" style="margin-bottom: 12px;">
+                <span class="hero-tag plate-label" style="margin-bottom: 12px;">
                     {t!(lang, "Catalog", "Danh mục")}
                 </span>
                 <h2 class="section-title">
@@ -1004,8 +1104,13 @@ fn CatalogPage() -> impl IntoView {
                             // scanner already had other work queued. Every
                             // other card keeps lazy+auto since they're
                             // below-the-fold on any real viewport.
+                            let card_class = if is_first {
+                                "glass-card product-card featured"
+                            } else {
+                                "glass-card product-card"
+                            };
                             view! {
-                                <div class="glass-card product-card">
+                                <div class=card_class>
                                     <A
                                         href=detail_url_1
                                         attr:style="display: block; position: relative;"
@@ -1708,7 +1813,7 @@ fn HandEstimator(lang: RwSignal<Language>) -> impl IntoView {
                         <span style="color: var(--text-muted);">
                             {t!(lang, "Middle Finger Length", "Chiều dài ngón giữa")}
                         </span>
-                        <span style="color: #fff; font-weight: 600;">
+                        <span style="color: var(--text-contrast); font-weight: 600;">
                             {move || format!("{:.1} cm", finger_len.get())}
                         </span>
                     </div>
@@ -1733,7 +1838,7 @@ fn HandEstimator(lang: RwSignal<Language>) -> impl IntoView {
                         <span style="color: var(--text-muted);">
                             {t!(lang, "Palm Width", "Chiều rộng lòng bàn tay")}
                         </span>
-                        <span style="color: #fff; font-weight: 600;">
+                        <span style="color: var(--text-contrast); font-weight: 600;">
                             {move || format!("{:.1} cm", palm_width.get())}
                         </span>
                     </div>
@@ -1764,7 +1869,7 @@ fn HandEstimator(lang: RwSignal<Language>) -> impl IntoView {
                 >
                     {move || recommendation().2}
                 </span>
-                <h4 style="font-size: 1.4rem; color: #fff; margin: 0; line-height: 1.2;">
+                <h4 style="font-size: 1.4rem; color: var(--text-contrast); margin: 0; line-height: 1.2;">
                     {move || recommendation().0}
                 </h4>
                 <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; text-align: justify; margin: 0;">
@@ -1836,7 +1941,7 @@ fn SoundTestPlayer(lang: RwSignal<Language>) -> impl IntoView {
                 >
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                         <span style="width: 14px; height: 14px; background: #eab308; border-radius: 4px; box-shadow: 0 0 8px #eab308;"></span>
-                        <h4 style="margin: 0; font-size: 1rem; color: #fff;">"Linear (Yellow)"</h4>
+                        <h4 style="margin: 0; font-size: 1rem; color: var(--text-contrast);">"Linear (Yellow)"</h4>
                     </div>
                     <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
                         {t!(
@@ -1854,7 +1959,7 @@ fn SoundTestPlayer(lang: RwSignal<Language>) -> impl IntoView {
                 >
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                         <span style="width: 14px; height: 14px; background: #a16207; border-radius: 4px; box-shadow: 0 0 8px #a16207;"></span>
-                        <h4 style="margin: 0; font-size: 1rem; color: #fff;">"Tactile (Brown)"</h4>
+                        <h4 style="margin: 0; font-size: 1rem; color: var(--text-contrast);">"Tactile (Brown)"</h4>
                     </div>
                     <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
                         {t!(
@@ -1872,7 +1977,7 @@ fn SoundTestPlayer(lang: RwSignal<Language>) -> impl IntoView {
                 >
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                         <span style="width: 14px; height: 14px; background: #06b6d4; border-radius: 4px; box-shadow: 0 0 8px #06b6d4;"></span>
-                        <h4 style="margin: 0; font-size: 1rem; color: #fff;">"Clicky (Blue)"</h4>
+                        <h4 style="margin: 0; font-size: 1rem; color: var(--text-contrast);">"Clicky (Blue)"</h4>
                     </div>
                     <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
                         {t!(
@@ -2039,7 +2144,7 @@ fn ProductDetailPage() -> impl IntoView {
                                             >
                                                 {name.clone()}
                                             </h1>
-                                            <div style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: #fff; margin-top: 10px; margin-bottom: 12px;">
+                                            <div style="font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--text-contrast); margin-top: 10px; margin-bottom: 12px;">
                                                 {t!(lang, "From $", "Từ $")()}{price_str.clone()}
                                             </div>
                                             <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.92rem; margin: 0; text-align: justify;">
@@ -2253,7 +2358,7 @@ fn ProductDetailPage() -> impl IntoView {
 
                             // Product Details Section (Full Width, below the builder container grid)
                             <div class="product-details-container">
-                                <h3 style="font-size: 1.5rem; color: #fff; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-weight: 700; text-align: center; letter-spacing: 0.05em; text-transform: uppercase;">
+                                <h3 style="font-size: 1.5rem; color: var(--text-contrast); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-weight: 700; text-align: center; letter-spacing: 0.05em; text-transform: uppercase;">
                                     {t!(
                                         lang, "Product Details & Deep Dive", "Chi tiết sản phẩm & Đi sâu tìm hiểu"
                                     )}
@@ -2343,7 +2448,7 @@ fn AboutPage() -> impl IntoView {
         />
         <div class="about-section">
             <div class="about-header">
-                <span class="hero-tag">{t!(lang, "Philosophy", "Triết lý")}</span>
+                <span class="hero-tag plate-label">{t!(lang, "Philosophy", "Triết lý")}</span>
                 <h1 class="gradient-text">
                     {t!(lang, "Open-Source Keyboards", "Bàn phím Nguồn mở")}
                 </h1>
@@ -2383,7 +2488,7 @@ fn AboutPage() -> impl IntoView {
                 </p>
 
                 <div class="about-highlight-box">
-                    <h3 style="margin-bottom: 12px; font-size: 1.2rem; color: #fff;">
+                    <h3 style="margin-bottom: 12px; font-size: 1.2rem; color: var(--text-contrast);">
                         {t!(lang, "Our Printing Philosophy", "Triết lý in 3D của chúng tôi")}
                     </h3>
                     <p>
@@ -2622,7 +2727,7 @@ fn AiAssistant() -> impl IntoView {
             on:click=move |_| set_is_open.update(|open| *open = !*open)
             type="button"
             class="messenger-float-btn"
-            style="border: none; background: linear-gradient(135deg, #8b5cf6, #06b6d4); box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4); display: flex; align-items: center; justify-content: center;"
+            style="border: none; display: flex; align-items: center; justify-content: center;"
             title="Chat with Open-DIY AI Support"
         >
             {move || {
@@ -2650,8 +2755,8 @@ fn AiAssistant() -> impl IntoView {
                 view! {
                     <div class="glass-card ai-chat-window">
                         // Header
-                        <div style="padding: 16px; background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2)); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; text-align: left;">
-                            <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e;"></span>
+                        <div style="padding: 16px; background: var(--primary-glow); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; text-align: left;">
+                            <span style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success);"></span>
                             <div>
                                 <h4 style="margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text-contrast);">
                                     "Trợ lý AI Open-DIY"
@@ -2674,16 +2779,16 @@ fn AiAssistant() -> impl IntoView {
                                     .map(|msg| {
                                         let (bg, align, text_color, rounded) = if msg.is_ai {
                                             (
-                                                "rgba(255,255,255,0.05)",
+                                                "var(--bg-card)",
                                                 "flex-start",
-                                                "#fff",
+                                                "var(--text-main)",
                                                 "12px 12px 12px 2px",
                                             )
                                         } else {
                                             (
-                                                "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                                                "var(--primary)",
                                                 "flex-end",
-                                                "#fff",
+                                                "var(--on-primary)",
                                                 "12px 12px 2px 12px",
                                             )
                                         };
@@ -2760,7 +2865,7 @@ fn AiAssistant() -> impl IntoView {
                                 placeholder="Nhập câu hỏi..."
                                 prop:value=input
                                 on:input=move |ev| set_input.set(event_target_value(&ev))
-                                style="flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; color: #fff; outline: none; transition: border 0.2s;"
+                                style="flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; color: var(--text-contrast); outline: none; transition: border 0.2s;"
                             />
                             <button
                                 type="submit"
@@ -2821,6 +2926,131 @@ fn NotFoundPage() -> impl IntoView {
                 <A href="/" attr:class="btn btn-primary">
                     {t!(lang, "Back to Home", "Quay lại Trang chủ")}
                 </A>
+            </div>
+        </div>
+    }
+}
+
+#[component]
+fn CheckoutPage() -> impl IntoView {
+    let lang = expect_context::<LanguageContext>().lang;
+    view! {
+        <SeoHead
+            title="open-diy Checkout | Xác nhận đơn hàng".to_string()
+            description="Review your custom keyboard build and confirm shipping and payment details."
+                .to_string()
+            path="/checkout".to_string()
+            image_path="/images/dactyl.webp".to_string()
+            robots="noindex,follow".to_string()
+        />
+        <div class="checkout-layout">
+            <div class="checkout-header">
+                <span class="hero-tag plate-label">{t!(lang, "Order Manifest", "Xác nhận đơn hàng")}</span>
+                <h1 class="gradient-text" style="font-size: 2.4rem;">
+                    {t!(lang, "Confirm Your Build", "Xác nhận cấu hình build")}
+                </h1>
+            </div>
+
+            <div class="manifest-panel">
+                <div class="manifest-panel-header">
+                    <span>{t!(lang, "Hardware Manifest", "Danh mục linh kiện")}</span>
+                    <span class="tx-id">"TX_ID: 0xA31F02"</span>
+                </div>
+                <table class="manifest-table">
+                    <thead>
+                        <tr>
+                            <th>{t!(lang, "Item", "Sản phẩm")}</th>
+                            <th>{t!(lang, "Qty", "SL")}</th>
+                            <th>{t!(lang, "Price", "Giá")}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="manifest-item-name">
+                                    {t!(
+                                        lang, "Dactyl-ManuForm Ergonomic Split", "Bàn phím Ergonomic Dactyl-ManuForm"
+                                    )}
+                                </div>
+                                <div class="manifest-item-spec">
+                                    {t!(
+                                        lang, "Hot-swap MX / PETG 0.2mm / Walnut rest", "Hot-swap MX / PETG 0.2mm / Kê tay gỗ óc chó"
+                                    )}
+                                </div>
+                            </td>
+                            <td class="manifest-qty">"1"</td>
+                            <td class="manifest-price">"$219.00"</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="manifest-item-name">
+                                    {t!(lang, "Frosted 60% Neon", "Bàn phím Frosted 60% Neon")}
+                                </div>
+                                <div class="manifest-item-spec">
+                                    {t!(
+                                        lang, "Translucent case / RGB underglow", "Vỏ bán trong suốt / Đèn nền RGB"
+                                    )}
+                                </div>
+                            </td>
+                            <td class="manifest-qty">"1"</td>
+                            <td class="manifest-price">"$109.00"</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="manifest-summary">
+                    <div class="manifest-summary-row">
+                        <span>{t!(lang, "Subtotal", "Tạm tính")}</span>
+                        <span>"$328.00"</span>
+                    </div>
+                    <div class="manifest-summary-row">
+                        <span>{t!(lang, "Shipping", "Phí vận chuyển")}</span>
+                        <span>"$12.00"</span>
+                    </div>
+                    <div class="manifest-summary-row total">
+                        <span>{t!(lang, "Total", "Tổng cộng")}</span>
+                        <span class="manifest-total-price">"$340.00"</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-form-panel">
+                <div class="form-section">
+                    <div class="form-section-label">
+                        {t!(lang, "Operator Coordinates", "Thông tin giao hàng")}
+                    </div>
+                    <div class="form-field">
+                        <label>{t!(lang, "Full Name", "Họ và tên")}</label>
+                        <input type="text" placeholder="Nguyễn Văn A" />
+                    </div>
+                    <div class="form-field">
+                        <label>{t!(lang, "Phone", "Số điện thoại")}</label>
+                        <input type="tel" placeholder="0901 234 567" />
+                    </div>
+                    <div class="form-field">
+                        <label>{t!(lang, "Shipping Address", "Địa chỉ giao hàng")}</label>
+                        <textarea rows="2" placeholder="123 Đường ABC, Quận 1, TP.HCM"></textarea>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-label">
+                        {t!(lang, "Secure Uplink", "Phương thức thanh toán")}
+                    </div>
+                    <div class="payment-options">
+                        <label class="payment-option selected">
+                            <input type="radio" name="payment" checked="checked" />
+                            {t!(
+                                lang, "Cash on delivery (COD)", "Thanh toán khi nhận hàng (COD)"
+                            )}
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" />
+                            {t!(lang, "Bank transfer", "Chuyển khoản ngân hàng")}
+                        </label>
+                    </div>
+                    <button class="btn btn-primary checkout-submit-btn">
+                        {t!(lang, "Deploy Order", "Xác nhận đặt hàng")}
+                    </button>
+                </div>
             </div>
         </div>
     }
